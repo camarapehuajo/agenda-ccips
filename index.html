@@ -775,7 +775,7 @@ function renderDetalle(id){
   document.querySelector(".wrap").scrollIntoView({behavior:"smooth", block:"start"});
 
   el.querySelectorAll("[data-back]").forEach(function(b){
-    b.addEventListener("click", function(){ history.replaceState(null,"",location.pathname); location.hash=""; });
+    b.addEventListener("click", function(){ history.replaceState(null,"",location.pathname); location.hash=""; ruta(); });
   });
   el.querySelectorAll("[data-ics]").forEach(function(btn){
     btn.addEventListener("click", function(){ descargarICS(buscar(btn.getAttribute("data-ics"))); });
