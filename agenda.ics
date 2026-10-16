@@ -1,0 +1,53 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//CCIPS Pehuajo//Agenda//ES
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:Agenda CCIPS Pehuajó
+X-WR-TIMEZONE:America/Argentina/Buenos_Aires
+BEGIN:VEVENT
+UID:charla-impuestos-2026@ccipspehuajo.ar
+DTSTAMP:20261016T120000Z
+DTSTART:20261001T190000
+DTEND:20261001T200000
+SUMMARY:Charla: Impuestos 2026 para comercios
+DESCRIPTION:Repaso práctico de los cambios impositivos 2026 para pequeños y medianos comercios. A cargo de un contador invitado. Cupo limitado.
+LOCATION:Salón de la Cámara
+END:VEVENT
+BEGIN:VEVENT
+UID:marketing-digital-pymes@ccipspehuajo.ar
+DTSTAMP:20261016T120000Z
+DTSTART:20261010T183000
+DTEND:20261010T193000
+SUMMARY:Capacitación: Marketing digital para pymes
+DESCRIPTION:Taller práctico: redes sociales\, Google Mi Negocio y publicidad online para comercios locales.
+LOCATION:Aula Taller
+END:VEVENT
+BEGIN:VEVENT
+UID:expo-pehuajo-2026@ccipspehuajo.ar
+DTSTAMP:20261016T120000Z
+DTSTART;VALUE=DATE:20261022
+DTEND;VALUE=DATE:20261023
+SUMMARY:Expo Pehuajó 2026
+DESCRIPTION:La gran feria anual de la ciudad. Stands\, gastronomía y espectáculos. Entrada libre y gratuita.
+LOCATION:Predio Ferial
+END:VEVENT
+BEGIN:VEVENT
+UID:asamblea-general-nov@ccipspehuajo.ar
+DTSTAMP:20261016T120000Z
+DTSTART:20261105T200000
+DTEND:20261105T210000
+SUMMARY:Asamblea General Ordinaria
+DESCRIPTION:Asamblea general ordinaria de socios. Se tratará el orden del día publicado.
+LOCATION:Salón de la Cámara
+END:VEVENT
+BEGIN:VEVENT
+UID:taller-whatsapp-business@ccipspehuajo.ar
+DTSTAMP:20261016T120000Z
+DTSTART:20261112T180000
+DTEND:20261112T190000
+SUMMARY:Taller: Cómo vender por WhatsApp Business
+DESCRIPTION:Aprendé a usar WhatsApp Business: catálogo\, mensajes automáticos y etiquetas para vender más.
+LOCATION:Online
+END:VEVENT
+END:VCALENDAR
