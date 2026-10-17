@@ -8,8 +8,7 @@ on:
   workflow_dispatch: {}
 
 permissions:
-  contents: read
-  models: read
+  contents: write
 
 jobs:
   bot:
@@ -32,5 +31,16 @@ jobs:
           NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           ALLOWED_TELEGRAM_IDS: ${{ secrets.ALLOWED_TELEGRAM_IDS }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: node scripts/telegram-bot.js
+
+      - name: Guardar borradores pendientes (si hay cambios)
+        run: |
+          git config user.name "Agenda Bot"
+          git config user.email "actions@users.noreply.github.com"
+          if [ -f pendientes.json ]; then git add pendientes.json; fi
+          if git diff --cached --quiet; then
+            echo "Sin cambios."
+          else
+            git commit -m "Bot: actualizar borradores pendientes"
+            git push
+          fi
