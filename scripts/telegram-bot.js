@@ -118,7 +118,7 @@ async function aiExtract(texto) {
     out = ((((d.candidates || [])[0] || {}).content || {}).parts || [])[0]?.text || "";
     if (!out && d.error) throw new Error("Gemini: " + (d.error.message || JSON.stringify(d.error)));
   } else {
-    const res = await fetch("https://models.inference.ai.azure.com/chat/completions", {
+    const res = await fetch("https://models.github.ai/inference/chat/completions", {
       method: "POST",
       headers: { "Content-Type": "application/json", "Authorization": "Bearer " + GH_TOKEN },
       body: JSON.stringify({
