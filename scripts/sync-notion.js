@@ -121,8 +121,8 @@ async function main() {
   L.push("VERSION:2.0");
   L.push("PRODID:-//CCIPS Pehuajo//Agenda//ES");
   L.push("CALSCALE:GREGORIAN");
-  L.push("METHOD:PUBLISH");
   L.push("X-WR-CALNAME:Agenda CCIPS Pehuajó");
+  L.push("X-PUBLISHED-TTL:PT1H");
   for (const a of acts) {
     if (a.privado || !a.fecha) continue;
     const d = parseDate(a.fecha);
