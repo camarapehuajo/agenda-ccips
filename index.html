@@ -453,7 +453,7 @@ function parseFecha(s){
 }
 
 function mesKey(s){ var d = parseFecha(s); return d.getFullYear()+"-"+pad(d.getMonth()+1); }
-function mesLabel(s){ var d = parseFecha(s); return MESES[d.getMonth()] + " " + d.getFullYear(); }
+function mesLabel(k){ var p = String(k).split("-"); return MESES[(parseInt(p[1],10)||1)-1] + " " + p[0]; }
 function dia(s){ return +s.split("-")[2]; }
 function mesCorto(s){ return MESES_CORTOS[+s.split("-")[1]-1]; }
 
@@ -778,7 +778,7 @@ function renderDetalle(id){
   document.querySelector(".wrap").scrollIntoView({behavior:"smooth", block:"start"});
 
   el.querySelectorAll("[data-back]").forEach(function(b){
-    b.addEventListener("click", function(){ history.replaceState(null,"",location.pathname); location.hash=""; ruta(); });
+    b.addEventListener("click", function(){ try { history.replaceState(null,"",location.pathname); } catch(e){} if(location.hash){ location.hash=""; } ruta(); });
   });
   el.querySelectorAll("[data-ics]").forEach(function(btn){
     btn.addEventListener("click", function(){ descargarICS(buscar(btn.getAttribute("data-ics"))); });
