@@ -578,7 +578,7 @@ function fmtUtc(dt){ // YYYYMMDDTHHMMSSZ (UTC, para DTSTAMP)
 
 function gcalLink(a){
   var t = parseFechaHora(a);
-  var url = "https://calendar.google.com/calendar/r/eventedit?text=" + encodeURIComponent(a.nombre || "Evento");
+  var url = "https://calendar.google.com/calendar/render?action=TEMPLATE&text=" + encodeURIComponent(a.nombre || "Evento");
   if(t.allDay){
     url += "&dates=" + fmtDateOnly(t.inicio) + "/" + fmtDateOnly(addDays(t.inicio,1));
   } else {
