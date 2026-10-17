@@ -1,0 +1,93 @@
+[
+  {
+    "id": "charla-impuestos-2026",
+    "nombre": "Charla: Impuestos 2026 para comercios",
+    "fecha": "2026-10-01",
+    "hora": "19:00",
+    "lugar": "Salón de la Cámara",
+    "tipo": "Charla",
+    "imagen": "",
+    "descripcion": "Repaso práctico de los cambios impositivos 2026 para comercios. A cargo de un contador invitado.",
+    "linkInscripcion": "https://bead-bar-b60.notion.site/3fc854fe4e5d8122af07c6d29d95c802?v=3fc854fe4e5d811b88e7000c0a09b0f1",
+    "ubicacion": "https://maps.google.com/?q=Pehuajó",
+    "privado": false
+  },
+  {
+    "id": "marketing-digital-pymes",
+    "nombre": "Capacitación: Marketing digital para pymes",
+    "fecha": "2026-10-10",
+    "hora": "18:30",
+    "lugar": "Aula Taller",
+    "tipo": "Curso",
+    "imagen": "",
+    "descripcion": "Taller práctico: redes sociales, Google Mi Negocio y publicidad online.",
+    "linkInscripcion": "https://bead-bar-b60.notion.site/3fc854fe4e5d8122af07c6d29d95c802?v=3fc854fe4e5d811b88e7000c0a09b0f1",
+    "ubicacion": "",
+    "privado": false
+  },
+  {
+    "id": "reunion-cd-privada",
+    "nombre": "Reunión de Comisión Directiva",
+    "fecha": "2026-10-15",
+    "hora": "19:30",
+    "lugar": "Sala de reuniones",
+    "tipo": "Reunión",
+    "imagen": "",
+    "descripcion": "Reunión interna de la Comisión Directiva.",
+    "linkInscripcion": "",
+    "ubicacion": "",
+    "privado": true
+  },
+  {
+    "id": "expo-pehuajo-2026",
+    "nombre": "Expo Pehuajó 2026",
+    "fecha": "2026-10-22",
+    "hora": "",
+    "lugar": "Predio Ferial",
+    "tipo": "Feria",
+    "imagen": "",
+    "descripcion": "La gran feria anual de la ciudad. Stands, gastronomía y espectáculos.",
+    "linkInscripcion": "",
+    "ubicacion": "https://maps.google.com/?q=Predio Ferial Pehuajó",
+    "privado": false
+  },
+  {
+    "id": "prueba-1",
+    "nombre": "Prueba 1",
+    "fecha": "2026-10-28",
+    "hora": "16:00",
+    "lugar": "asd",
+    "tipo": "Otro",
+    "imagen": "",
+    "descripcion": "Esto es una prueba",
+    "linkInscripcion": "",
+    "ubicacion": "",
+    "privado": false
+  },
+  {
+    "id": "asamblea-general-nov",
+    "nombre": "Asamblea General Ordinaria",
+    "fecha": "2026-11-05",
+    "hora": "20:00",
+    "lugar": "Salón de la Cámara",
+    "tipo": "Asamblea",
+    "imagen": "",
+    "descripcion": "Asamblea general ordinaria de socios.",
+    "linkInscripcion": "",
+    "ubicacion": "https://maps.google.com/?q=Pehuajó",
+    "privado": false
+  },
+  {
+    "id": "taller-whatsapp-business",
+    "nombre": "Taller: Cómo vender por WhatsApp Business",
+    "fecha": "2026-11-12",
+    "hora": "18:00",
+    "lugar": "Online",
+    "tipo": "Curso",
+    "imagen": "img/taller-whatsapp-business.jpg",
+    "descripcion": "Aprendé a usar WhatsApp Business: catálogo y mensajes automáticos.",
+    "linkInscripcion": "https://bead-bar-b60.notion.site/3fc854fe4e5d8122af07c6d29d95c802?v=3fc854fe4e5d811b88e7000c0a09b0f1",
+    "ubicacion": "",
+    "privado": false
+  }
+]
