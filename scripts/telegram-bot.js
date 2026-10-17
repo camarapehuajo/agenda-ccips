@@ -2,16 +2,13 @@
 /*
   ============================================================
   Bot de Telegram -> IA -> confirmación -> Notion
-  1) Leé el mensaje, lo interpreta con IA.
-  2) Te lo muestra y pide confirmación (botones ✅ / ❌).
-  3) Si confirmás, crea la actividad en Notion (Borrador).
+  1) Interpreta el mensaje y te muestra el resumen.
+  2) Si respondés corrigiendo, ACTUALIZA el borrador (no crea otro).
+  3) Con ✅ lo carga en Notion (Borrador); con ❌ lo descarta.
 
   Variables de entorno:
-    TELEGRAM_BOT_TOKEN      (obligatoria)
-    GEMINI_API_KEY          (obligatoria) clave de Google Gemini
-    NOTION_TOKEN            (obligatoria)
-    NOTION_DATABASE_ID      (opcional)
-    ALLOWED_TELEGRAM_IDS    (opcional) ids autorizados, separados por coma
+    TELEGRAM_BOT_TOKEN, GEMINI_API_KEY, NOTION_TOKEN
+    NOTION_DATABASE_ID (opcional), ALLOWED_TELEGRAM_IDS (opcional)
   ============================================================
 */
 
@@ -30,6 +27,10 @@ const PEND = "pendientes.json";
 
 function cargarPend() { try { return JSON.parse(fs.readFileSync(PEND, "utf8")); } catch (e) { return {}; } }
 function guardarPend(o) { fs.writeFileSync(PEND, JSON.stringify(o, null, 2) + "\n"); }
+function draftDeChat(pend, chatId) {
+  for (const k of Object.keys(pend)) { if (String(pend[k].chat) === String(chatId)) return k; }
+  return null;
+}
 
 async function tg(method, payload) {
   const res = await fetch(TGAPI + "/" + method, {
@@ -39,14 +40,11 @@ async function tg(method, payload) {
   });
   return res.json();
 }
-
 async function getUpdates(offset) {
-  const url = TGAPI + "/getUpdates" + (offset != null ? "?offset=" + offset : "");
-  const res = await fetch(url);
+  const res = await fetch(TGAPI + "/getUpdates" + (offset != null ? "?offset=" + offset : ""));
   const d = await res.json();
   return d.result || [];
 }
-
 function autorizado(msg) {
   if (ALLOWED.length === 0) return true;
   const uid = String(msg.from && msg.from.id);
@@ -54,7 +52,7 @@ function autorizado(msg) {
   return ALLOWED.includes(uid) || ALLOWED.includes(cid);
 }
 
-/* ---------- Traer el texto de un link ---------- */
+/* ---------- Leer links ---------- */
 async function textoDeLink(url) {
   try {
     const r = await fetch(url, { headers: { "User-Agent": "Mozilla/5.0 (compatible; AgendaCCIPS/1.0)" } });
@@ -62,20 +60,14 @@ async function textoDeLink(url) {
     const html = await r.text();
     const ogT = (html.match(/<meta[^>]+property=["']og:title["'][^>]+content=["']([^"']+)/i) || [])[1] || "";
     const ogD = (html.match(/<meta[^>]+property=["']og:description["'][^>]+content=["']([^"']+)/i) || [])[1] || "";
-    let t = html
-      .replace(/<script[\s\S]*?<\/script>/gi, " ")
-      .replace(/<style[\s\S]*?<\/style>/gi, " ")
-      .replace(/<[^>]+>/g, " ")
-      .replace(/&nbsp;/g, " ")
-      .replace(/&amp;/g, "&")
-      .replace(/\s+/g, " ")
-      .trim();
+    let t = html.replace(/<script[\s\S]*?<\/script>/gi, " ").replace(/<style[\s\S]*?<\/style>/gi, " ")
+      .replace(/<[^>]+>/g, " ").replace(/&nbsp;/g, " ").replace(/&amp;/g, "&").replace(/\s+/g, " ").trim();
     return [ogT, ogD].filter(Boolean).join(" — ") + "\n" + t.slice(0, 2500);
   } catch (e) { return ""; }
 }
 
-/* ---------- IA: interpretar ---------- */
-async function aiExtract(texto) {
+/* ---------- IA ---------- */
+async function aiExtract(texto, anterior) {
   const hoy = new Date();
   const dias = ["domingo", "lunes", "martes", "miércoles", "jueves", "viernes", "sábado"];
   const fechaHoy = hoy.toISOString().slice(0, 10) + " (" + dias[hoy.getDay()] + ")";
@@ -87,13 +79,7 @@ async function aiExtract(texto) {
     if (t) contextoLink += "\n\n[Contenido del link " + l + "]\n" + t;
   }
 
-  const sistema =
-    "Sos el asistente de la Agenda de la Cámara de Comercio, Industria, Producción y Servicios de Pehuajó (CCIPS). " +
-    "Recibís un mensaje (puede ser informal, desordenado, cortado, con errores de tipeo, con emojis o con links) " +
-    "y tenés que interpretarlo CON CRITERIO para armar los datos de UNA actividad. " +
-    "No seas literal: entendé la intención. Completá lo que puedas inferir; NO inventes datos que no surjan del mensaje.";
-  const usuario =
-    "Hoy es " + fechaHoy + ". Usá esa fecha para interpretar expresiones relativas ('el jueves', 'la semana que viene', 'el 5/11', 'mañana').\n" +
+  const esquema =
     "Devolvé SOLO un objeto JSON válido, sin texto extra, con estas claves:\n" +
     '- "nombre": título claro y corto (string)\n' +
     '- "fecha": YYYY-MM-DD (string; "" si no se puede determinar)\n' +
@@ -101,12 +87,27 @@ async function aiExtract(texto) {
     '- "lugar": lugar (string; "" si no)\n' +
     '- "tipo": "Curso","Charla","Evento","Asamblea","Feria","Reunión" u "Otro"\n' +
     '- "descripcion": 1 a 3 oraciones con el detalle (string; "" si no hay)\n' +
-    '- "linkInscripcion": link para anotarse, si hay (string; "" si no)\n' +
-    "Mensaje:\n\"\"\"\n" + texto + "\n\"\"\"" + contextoLink;
+    '- "linkInscripcion": link para anotarse, si hay (string; "" si no)\n';
+
+  const sistema =
+    "Sos el asistente de la Agenda de la Cámara de Comercio, Industria, Producción y Servicios de Pehuajó (CCIPS). " +
+    "Interpretás mensajes (informales, cortados, con links) para armar los datos de UNA actividad. " +
+    "No seas literal: entendé la intención. No inventes datos que no surjan del texto. " +
+    "Si te paso DATOS ACTUALES y una CORRECCIÓN, devolvés esos datos actualizados (no una actividad nueva).";
+
+  let usuario;
+  if (anterior) {
+    usuario = "Hoy es " + fechaHoy + ".\n" +
+      "DATOS ACTUALES de la actividad (JSON):\n" + JSON.stringify(anterior) + "\n\n" +
+      "El usuario está corrigiendo o agregando esto:\n\"\"\"\n" + texto + "\n\"\"\"\n\n" +
+      "Devolvé el JSON ACTUALIZADO (mismas claves) aplicando los cambios. Lo que no se menciona, dejalo igual.\n" + esquema;
+  } else {
+    usuario = "Hoy es " + fechaHoy + ". Usá esa fecha para expresiones relativas ('el jueves', 'la semana que viene', 'el 5/11', 'mañana').\n" +
+      esquema + "\nMensaje:\n\"\"\"\n" + texto + "\n\"\"\"" + contextoLink;
+  }
 
   if (!GEMINI) throw new Error("La IA no está configurada (falta GEMINI_API_KEY).");
-  let out = "";
-  let ultimoError = "";
+  let out = "", ultimoError = "";
   const modelos = ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-flash-latest", "gemini-1.5-flash"];
   for (const mo of modelos) {
     const res = await fetch("https://generativelanguage.googleapis.com/v1beta/models/" + mo + ":generateContent?key=" + GEMINI, {
@@ -161,8 +162,7 @@ async function crearEnNotion(a) {
 
 function resumenDe(datos) {
   return [
-    "📋 *Esto entendí:*",
-    "",
+    "📋 *Esto entendí:*", "",
     "📌 " + (datos.nombre || "(sin título)"),
     datos.fecha ? "📅 " + datos.fecha + (datos.hora ? "  🕐 " + datos.hora : "") : "📅 (no detecté la fecha)",
     datos.lugar ? "📍 " + datos.lugar : "",
@@ -170,6 +170,20 @@ function resumenDe(datos) {
     datos.linkInscripcion ? "🔗 " + datos.linkInscripcion : "",
     datos.descripcion ? "\n📝 " + datos.descripcion : ""
   ].filter(Boolean).join("\n");
+}
+
+async function mostrarBorrador(chatId, key, datos) {
+  const resumen = resumenDe(datos);
+  await tg("sendMessage", {
+    chat_id: chatId,
+    text: resumen + "\n\n¿La cargo en Notion?",
+    parse_mode: "Markdown",
+    disable_web_page_preview: true,
+    reply_markup: { inline_keyboard: [[
+      { text: "✅ Sí, cargar en Notion", callback_data: "ok:" + key },
+      { text: "❌ No", callback_data: "no:" + key }
+    ]] }
+  });
 }
 
 /* ---------- main ---------- */
@@ -182,19 +196,18 @@ async function main() {
   const maxId = Math.max(...updates.map(u => u.update_id));
 
   for (const u of updates) {
-    /* --- Botón pulsado --- */
+    /* --- Botón --- */
     if (u.callback_query) {
       const cq = u.callback_query;
       const data = cq.data || "";
       const chatId = cq.message.chat.id;
       const mid = cq.message.message_id;
       await tg("answerCallbackQuery", { callback_query_id: cq.id });
-
       const key = data.slice(data.indexOf(":") + 1);
       const p = pend[key];
 
       if (data.startsWith("ok:")) {
-        if (!p) { await tg("sendMessage", { chat_id: chatId, text: "⚠️ Ese borrador ya no está disponible. Mandá el mensaje de nuevo." }); continue; }
+        if (!p) { await tg("sendMessage", { chat_id: chatId, text: "⚠️ Ese borrador ya no está. Mandá el mensaje de nuevo." }); continue; }
         try {
           p.datos.id = slug(p.datos.nombre);
           await crearEnNotion(p.datos);
@@ -205,12 +218,12 @@ async function main() {
         }
       } else if (data.startsWith("no:")) {
         if (p) { delete pend[key]; cambio = true; }
-        await tg("editMessageText", { chat_id: chatId, message_id: mid, text: "❌ Cancelado. Si algo estaba mal, mandá el mensaje corregido.", parse_mode: "Markdown" });
+        await tg("editMessageText", { chat_id: chatId, message_id: mid, text: "❌ Cancelado. Mandá el mensaje de nuevo si querés.", parse_mode: "Markdown" });
       }
       continue;
     }
 
-    /* --- Mensaje de texto --- */
+    /* --- Texto --- */
     const msg = u.message || u.edited_message;
     if (!msg) continue;
     const chatId = msg.chat.id;
@@ -219,42 +232,33 @@ async function main() {
 
     if (texto === "/start" || texto === "/help" || texto.toLowerCase() === "ayuda") {
       await tg("sendMessage", { chat_id: chatId, text:
-        "👋 ¡Hola! Soy el bot de la Agenda de la Cámara de Comercio (CCIPS Pehuajó).\n\n" +
-        "Mandame la info de una actividad como salga (texto informal, datos sueltos o el link del evento). " +
-        "Te muestro lo que entendí y, si confirmás, la cargo en Notion como borrador." });
+        "👋 Soy el bot de la Agenda de CCIPS Pehuajó.\n\n" +
+        "Mandame la info de una actividad (texto informal, datos sueltos o el link). Te muestro lo que entendí y, si confirmás, la cargo en Notion.\n\n" +
+        "Si algo está mal, respondé corrigiendo (ej: «la fecha es el 22 y el lugar es el salón») y te vuelvo a mostrar el resumen." });
       continue;
     }
+    if (!autorizado(msg)) { await tg("sendMessage", { chat_id: chatId, text: "⛔ No autorizado." }); continue; }
 
-    if (!autorizado(msg)) {
-      await tg("sendMessage", { chat_id: chatId, text: "⛔ No estás autorizado para cargar actividades." });
-      continue;
-    }
+    // ¿Hay un borrador pendiente en este chat? -> es una corrección
+    const existente = draftDeChat(pend, chatId);
+    const anterior = existente ? pend[existente].datos : null;
 
-    await tg("sendMessage", { chat_id: chatId, text: "🤖 Leyendo e interpretando…" });
+    await tg("sendMessage", { chat_id: chatId, text: anterior ? "✏️ Actualizando los datos…" : "🤖 Leyendo e interpretando…" });
 
     try {
-      const datos = await aiExtract(texto);
-      const resumen = resumenDe(datos);
+      const datos = await aiExtract(texto, anterior);
+      if (existente) delete pend[existente];
       const key = "p" + Date.now() + Math.floor(Math.random() * 1000);
-      pend[key] = { datos: datos, resumen: resumen };
+      pend[key] = { chat: chatId, datos: datos };
+      pend[key].resumen = resumenDe(datos);
       cambio = true;
-
-      await tg("sendMessage", {
-        chat_id: chatId,
-        text: resumen + "\n\n¿La cargo en Notion?",
-        parse_mode: "Markdown",
-        disable_web_page_preview: true,
-        reply_markup: { inline_keyboard: [[
-          { text: "✅ Sí, cargar en Notion", callback_data: "ok:" + key },
-          { text: "❌ No", callback_data: "no:" + key }
-        ]] }
-      });
+      await mostrarBorrador(chatId, key, datos);
     } catch (e) {
       await tg("sendMessage", { chat_id: chatId, text: "⚠️ No pude interpretarlo. Probá describiendo qué es, cuándo y dónde.\n\n(Detalle: " + String(e.message).slice(0, 200) + ")" });
     }
   }
 
-  // Limpiar borradores viejos (más de 2 días)
+  // limpiar borradores viejos (> 2 días)
   const limite = Date.now() - 2 * 24 * 60 * 60 * 1000;
   for (const k of Object.keys(pend)) {
     const t = parseInt(String(k).replace(/^p/, ""), 10);
