@@ -103,9 +103,12 @@ async function aiExtract(texto) {
     '- "confianza": "alta", "media" o "baja" según cuán completos estén los datos\n\n' +
     "Mensaje:\n\"\"\"\n" + texto + "\n\"\"\"" + contextoLink;
 
+  if (!GEMINI) throw new Error("La IA todavía no está configurada (falta la clave de Google Gemini). Avisale al administrador.");
   let out = "";
-  if (GEMINI) {
-    const res = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=" + GEMINI, {
+  let ultimoError = "";
+  const modelos = ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-flash-latest", "gemini-1.5-flash"];
+  for (const mo of modelos) {
+    const res = await fetch("https://generativelanguage.googleapis.com/v1beta/models/" + mo + ":generateContent?key=" + GEMINI, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -115,22 +118,13 @@ async function aiExtract(texto) {
       })
     });
     const d = await res.json();
-    out = ((((d.candidates || [])[0] || {}).content || {}).parts || [])[0]?.text || "";
-    if (!out && d.error) throw new Error("Gemini: " + (d.error.message || JSON.stringify(d.error)));
-  } else {
-    const res = await fetch("https://models.github.ai/inference/chat/completions", {
-      method: "POST",
-      headers: { "Content-Type": "application/json", "Authorization": "Bearer " + GH_TOKEN },
-      body: JSON.stringify({
-        model: "gpt-4o",
-        temperature: 0.2,
-        messages: [{ role: "system", content: sistema }, { role: "user", content: usuario }]
-      })
-    });
-    const d = await res.json();
-    out = (((d.choices || [])[0] || {}).message || {}).content || "";
-    if (!out && d.error) throw new Error("GitHub Models: " + JSON.stringify(d.error));
+    if (d && d.candidates && d.candidates[0]) {
+      out = (((d.candidates[0].content || {}).parts || [])[0] || {}).text || "";
+      break;
+    }
+    ultimoError = JSON.stringify((d && d.error) || d);
   }
+  if (!out) throw new Error("Gemini: " + ultimoError.slice(0, 200));
 
   const m = out.match(/\{[\s\S]*\}/);
   if (!m) throw new Error("La IA no devolvió JSON. Respuesta: " + out.slice(0, 200));
