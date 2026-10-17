@@ -1,0 +1,36 @@
+name: Bot de Telegram (cargar actividades)
+
+on:
+  # Revisa mensajes nuevos del bot cada 10 minutos
+  schedule:
+    - cron: "*/10 * * * *"
+  # Permite ejecutarlo a mano desde "Actions"
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  models: read
+
+jobs:
+  bot:
+    runs-on: ubuntu-latest
+    concurrency:
+      group: telegram-bot
+      cancel-in-progress: false
+    steps:
+      - name: Descargar el repositorio
+        uses: actions/checkout@v4
+
+      - name: Preparar Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Procesar mensajes del bot
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          ALLOWED_TELEGRAM_IDS: ${{ secrets.ALLOWED_TELEGRAM_IDS }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node scripts/telegram-bot.js
