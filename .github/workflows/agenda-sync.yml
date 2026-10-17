@@ -32,7 +32,7 @@ jobs:
         run: |
           git config user.name "Agenda Bot"
           git config user.email "actions@users.noreply.github.com"
-          git add actividades.js agenda.ics
+          git add actividades.js agenda.ics actividades.json
           if [ -d img ]; then git add img; fi
           if git diff --cached --quiet; then
             echo "Sin cambios para subir."

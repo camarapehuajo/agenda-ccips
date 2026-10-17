@@ -114,6 +114,8 @@ async function main() {
 
   // 1) actividades.js
   fs.writeFileSync("actividades.js", "window.ACTIVIDADES = " + JSON.stringify(acts, null, 2) + ";\n");
+  // 1b) actividades.json (datos limpios, para el script de Google Calendar)
+  fs.writeFileSync("actividades.json", JSON.stringify(acts, null, 2) + "\n");
 
   // 2) agenda.ics (solo públicas, para el calendario suscripto)
   const L = [];
