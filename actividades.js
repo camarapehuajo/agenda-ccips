@@ -8,7 +8,7 @@ window.ACTIVIDADES = [
     "tipo": "Charla",
     "imagen": "",
     "descripcion": "Repaso práctico de los cambios impositivos 2026 para comercios. A cargo de un contador invitado.",
-    "linkInscripcion": "https://example.com/inscripcion-charla-impuestos",
+    "linkInscripcion": "https://bead-bar-b60.notion.site/3fc854fe4e5d8122af07c6d29d95c802?v=3fc854fe4e5d811b88e7000c0a09b0f1",
     "ubicacion": "https://maps.google.com/?q=Pehuajó",
     "privado": false
   },
@@ -21,7 +21,7 @@ window.ACTIVIDADES = [
     "tipo": "Curso",
     "imagen": "",
     "descripcion": "Taller práctico: redes sociales, Google Mi Negocio y publicidad online.",
-    "linkInscripcion": "https://example.com/inscripcion-marketing",
+    "linkInscripcion": "https://bead-bar-b60.notion.site/3fc854fe4e5d8122af07c6d29d95c802?v=3fc854fe4e5d811b88e7000c0a09b0f1",
     "ubicacion": "",
     "privado": false
   },
@@ -52,6 +52,19 @@ window.ACTIVIDADES = [
     "privado": false
   },
   {
+    "id": "prueba-1",
+    "nombre": "Prueba 1",
+    "fecha": "2026-10-28",
+    "hora": "16:00",
+    "lugar": "asd",
+    "tipo": "Otro",
+    "imagen": "",
+    "descripcion": "Esto es una prueba",
+    "linkInscripcion": "",
+    "ubicacion": "",
+    "privado": false
+  },
+  {
     "id": "asamblea-general-nov",
     "nombre": "Asamblea General Ordinaria",
     "fecha": "2026-11-05",
@@ -71,9 +84,9 @@ window.ACTIVIDADES = [
     "hora": "18:00",
     "lugar": "Online",
     "tipo": "Curso",
-    "imagen": "",
+    "imagen": "img/taller-whatsapp-business.jpg",
     "descripcion": "Aprendé a usar WhatsApp Business: catálogo y mensajes automáticos.",
-    "linkInscripcion": "https://example.com/inscripcion-whatsapp",
+    "linkInscripcion": "https://bead-bar-b60.notion.site/3fc854fe4e5d8122af07c6d29d95c802?v=3fc854fe4e5d811b88e7000c0a09b0f1",
     "ubicacion": "",
     "privado": false
   }
