@@ -36,15 +36,18 @@ function sincronizarAgenda() {
   acts.forEach(function (a) {
     if (a.privado || !a.fecha) return;               // los privados no van al calendario público
     var desc = (a.descripcion ? a.descripcion + "\n\n" : "") + MARCA + a.id;
+    var ev;
     if (a.hora) {
       var ini = new Date(a.fecha + "T" + a.hora + ":00-03:00");   // hora de Argentina (UTC-3)
       var fin = new Date(ini.getTime() + 60 * 60 * 1000);         // 1 hora de duración
-      cal.createEvent(a.nombre, ini, fin, { description: desc, location: a.lugar || "" });
+      ev = cal.createEvent(a.nombre, ini, fin, { description: desc, location: a.lugar || "" });
     } else {
       var p = a.fecha.split("-");
       var dia = new Date(Number(p[0]), Number(p[1]) - 1, Number(p[2]));
-      cal.createAllDayEvent(a.nombre, dia, { description: desc, location: a.lugar || "" });
+      ev = cal.createAllDayEvent(a.nombre, dia, { description: desc, location: a.lugar || "" });
     }
+    // Que figure como "Disponible" (no como "Ocupado")
+    ev.setTransparency(CalendarApp.EventTransparency.TRANSPARENT);
     n++;
   });
 
