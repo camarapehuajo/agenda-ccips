@@ -110,29 +110,11 @@
   .section.past .month-head h2{color:var(--muted);}
   .section.past .month-head::before{background:#b8c0ca;}
 
-  /* ===== DESTACADO (banner grande) ===== */
-  .section.featured{margin-top:26px;}
-  .destacado{
-    position:relative;background:var(--card);border:1px solid var(--line);border-radius:20px;
-    overflow:hidden;margin-bottom:16px;cursor:pointer;box-shadow:var(--shadow);
-    transition:transform .18s,box-shadow .18s,border-color .18s;
-  }
-  .destacado:hover{transform:translateY(-2px);border-color:var(--accent);box-shadow:var(--shadow-hover);}
-  .destacado:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
-  .destacado .d-img{position:relative;height:300px;background:linear-gradient(135deg,var(--accent),var(--primary) 60%,var(--secondary));}
-  .destacado .d-img img{width:100%;height:100%;object-fit:cover;display:block;}
-  .destacado .d-ph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:56px;color:rgba(255,255,255,.9);}
-  .destacado .d-badge{
-    position:absolute;top:14px;left:14px;display:inline-flex;align-items:center;gap:5px;
-    background:linear-gradient(135deg,var(--accent),var(--primary));color:#fff;
-    font-size:11px;font-weight:800;letter-spacing:1px;text-transform:uppercase;
-    padding:6px 12px;border-radius:999px;box-shadow:0 4px 14px rgba(0,0,0,.28);
-  }
-  .destacado .d-body{padding:18px 22px 20px;}
-  .destacado .d-body h3{font-size:23px;font-weight:800;line-height:1.2;margin-top:8px;}
-  .destacado .d-meta{font-size:13.5px;color:var(--muted);margin-top:9px;display:flex;flex-wrap:wrap;gap:4px 14px;}
-  .destacado .d-meta span{display:inline-flex;align-items:center;gap:5px;}
-  @media(max-width:560px){.destacado .d-img{height:190px;}.destacado .d-body h3{font-size:19px;}.destacado .d-body{padding:14px 16px 16px;}}
+  /* ===== ACTIVIDAD DESTACADA (sutil, dentro del orden de fechas) ===== */
+  .event.destacado{border-left:4px solid var(--accent);background:linear-gradient(90deg,rgba(5,150,210,.06),var(--card) 26%);}
+  .event.destacado .info .title{color:var(--primary);}
+  .event .star{color:var(--accent);margin-right:3px;}
+  .event.destacado .tag{background:rgba(5,150,210,.20);}
 
   /* ===== TARJETA EVENTO ===== */
   .event{
@@ -703,11 +685,11 @@ function thumbHtml(a){
 }
 
 function eventoCard(a){
-  return '<div class="event" data-id="'+esc(a.id)+'" tabindex="0" role="button" aria-label="Ver detalle de '+esc(a.nombre)+'">' +
+  return '<div class="event'+(a.destacado?' destacado':'')+'" data-id="'+esc(a.id)+'" tabindex="0" role="button" aria-label="Ver detalle de '+esc(a.nombre)+'">' +
     '<div class="date"><div class="d">'+dia(a.fecha)+'</div><div class="m">'+mesCorto(a.fecha)+'</div></div>' +
     '<div class="thumb">'+thumbHtml(a)+'</div>' +
     '<div class="info">' +
-      '<div class="title">'+esc(a.nombre)+'</div>' +
+      '<div class="title">'+(a.destacado?'<span class="star" aria-hidden="true">⭐</span>':'')+esc(a.nombre)+'</div>' +
       '<div class="meta">' +
         (a.hora?'<span>🕐 '+esc(a.hora)+' hs</span>':'') +
         (a.lugar?'<span>📍 '+esc(a.lugar)+'</span>':'') +
@@ -774,19 +756,10 @@ function renderLista(filtro){
   }
 
   var hoy = new Date(); hoy.setHours(0,0,0,0);
-  // Destacadas: solo las que todavía no pasaron
-  var esDestacada = function(a){ return a.destacado && parseFecha(a.fecha) >= hoy; };
-  var destacadas = publicas.filter(esDestacada);
-  var resto = publicas.filter(function(a){ return !esDestacada(a); });
-  var proximas = resto.filter(function(a){ return parseFecha(a.fecha) >= hoy; });
-  var pasadas  = resto.filter(function(a){ return parseFecha(a.fecha) < hoy; });
+  var proximas = publicas.filter(function(a){ return parseFecha(a.fecha) >= hoy; });
+  var pasadas  = publicas.filter(function(a){ return parseFecha(a.fecha) < hoy; });
 
   var html = "";
-  if(destacadas.length){
-    html += '<section class="section featured" aria-label="Destacados">' +
-            '<div class="section-head"><h2>Destacados</h2></div>' +
-            destacadas.map(destacadoHtml).join("") + '</section>';
-  }
   if(proximas.length){
     html += '<section class="section upcoming" aria-label="Próximas actividades">' +
             '<div class="section-head"><h2>Próximas actividades</h2><span class="count">'+proximas.length+'</span></div>' +
@@ -800,12 +773,6 @@ function renderLista(filtro){
   meses.innerHTML = html;
 
   meses.querySelectorAll(".event").forEach(function(ev){
-    ev.addEventListener("click", function(){ location.hash = ev.getAttribute("data-id"); });
-    ev.addEventListener("keydown", function(e){
-      if(e.key==="Enter"){ e.preventDefault(); location.hash = ev.getAttribute("data-id"); }
-    });
-  });
-  meses.querySelectorAll(".destacado").forEach(function(ev){
     ev.addEventListener("click", function(){ location.hash = ev.getAttribute("data-id"); });
     ev.addEventListener("keydown", function(e){
       if(e.key==="Enter"){ e.preventDefault(); location.hash = ev.getAttribute("data-id"); }
