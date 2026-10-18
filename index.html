@@ -110,11 +110,11 @@
   .section.past .month-head h2{color:var(--muted);}
   .section.past .month-head::before{background:#b8c0ca;}
 
-  /* ===== ACTIVIDAD DESTACADA (sutil, dentro del orden de fechas) ===== */
-  .event.destacado{border-left:4px solid var(--accent);background:linear-gradient(90deg,rgba(5,150,210,.06),var(--card) 26%);}
-  .event.destacado .info .title{color:var(--primary);}
-  .event .star{color:var(--accent);margin-right:3px;}
-  .event.destacado .tag{background:rgba(5,150,210,.20);}
+  /* ===== ACTIVIDAD DESTACADA (más visible, dentro del orden de fechas) ===== */
+  .event.destacado{border-left:6px solid var(--accent);background:linear-gradient(90deg,rgba(5,150,210,.11),var(--card) 34%);box-shadow:0 6px 20px -12px rgba(5,150,210,.55);}
+  .event.destacado .info .title{color:var(--primary);font-size:16.5px;}
+  .dest-badge{display:inline-block;background:linear-gradient(135deg,var(--accent),var(--primary));color:#fff;font-size:9.5px;font-weight:800;letter-spacing:.7px;text-transform:uppercase;padding:3px 9px;border-radius:999px;margin-right:8px;vertical-align:2px;white-space:nowrap;}
+  .event.destacado .tag{background:rgba(5,150,210,.22);}
 
   /* ===== TARJETA EVENTO ===== */
   .event{
@@ -689,7 +689,7 @@ function eventoCard(a){
     '<div class="date"><div class="d">'+dia(a.fecha)+'</div><div class="m">'+mesCorto(a.fecha)+'</div></div>' +
     '<div class="thumb">'+thumbHtml(a)+'</div>' +
     '<div class="info">' +
-      '<div class="title">'+(a.destacado?'<span class="star" aria-hidden="true">⭐</span>':'')+esc(a.nombre)+'</div>' +
+      '<div class="title">'+(a.destacado?'<span class="dest-badge">⭐ Destacado</span>':'')+esc(a.nombre)+'</div>' +
       '<div class="meta">' +
         (a.hora?'<span>🕐 '+esc(a.hora)+' hs</span>':'') +
         (a.lugar?'<span>📍 '+esc(a.lugar)+'</span>':'') +
