@@ -111,7 +111,7 @@
   .section.past .month-head::before{background:#b8c0ca;}
 
   /* ===== ACTIVIDAD DESTACADA (más grande, dentro del orden de fechas) ===== */
-  .event.destacado{border-left:6px solid var(--accent);background:linear-gradient(90deg,rgba(5,150,210,.11),var(--card) 34%);box-shadow:0 6px 20px -12px rgba(5,150,210,.55);padding:26px 18px;min-height:150px;}
+  .event.destacado{border-left:6px solid var(--accent);background:linear-gradient(90deg,rgba(5,150,210,.11),var(--card) 34%);box-shadow:0 6px 20px -12px rgba(5,150,210,.55);padding:26px 18px;height:auto;min-height:170px;}
   .event.destacado .info .title{color:var(--primary);font-size:19px;-webkit-line-clamp:3;}
   .event.destacado .thumb{flex:0 0 76px;width:76px;height:76px;}
   .event.destacado .date{flex:0 0 66px;width:66px;padding:12px 4px;}
@@ -124,7 +124,7 @@
   .event{
     display:flex;align-items:center;gap:16px;
     background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
-    padding:14px 18px;margin-bottom:12px;cursor:pointer;min-height:80px;
+    padding:14px 18px;margin-bottom:12px;cursor:pointer;height:104px;overflow:hidden;
     transition:transform .18s,box-shadow .18s,border-color .18s;box-shadow:var(--shadow);
   }
   .event:hover{transform:scale(1.02);border-color:var(--accent);box-shadow:var(--shadow-hover);}
@@ -144,7 +144,7 @@
   .thumb .ph{font-size:22px;color:var(--accent);}
   .info{flex:1;min-width:0;}
   .info .title{font-size:15.5px;font-weight:700;color:var(--ink);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
-  .info .meta{font-size:12.5px;color:var(--muted);margin-top:4px;display:flex;flex-wrap:wrap;gap:4px 14px;}
+  .info .meta{font-size:12.5px;color:var(--muted);margin-top:4px;display:flex;flex-wrap:nowrap;gap:4px 14px;overflow:hidden;}
   .info .meta span{display:inline-flex;align-items:center;gap:5px;}
   .tag{
     font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;
@@ -342,9 +342,9 @@
     .hero p.sub{font-size:15px;}
     .thumb{display:none;}
     .cta{display:none;}
-    .event{min-height:0;padding:12px 14px;}
+    .event{height:92px;padding:12px 14px;}
     .info .title{font-size:14.5px;}
-    .event.destacado{min-height:118px;padding:18px 14px;}
+    .event.destacado{height:auto;min-height:136px;padding:18px 14px;}
     .event.destacado .info .title{font-size:16.5px;}
     .event.destacado .date{flex:0 0 58px;width:58px;padding:9px 4px;}
     .event.destacado .date .d{font-size:20px;}
