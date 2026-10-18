@@ -696,12 +696,13 @@ function compartirEvento(a){
     }
   }
 
-  if(navigator.share){
+  var esMovil = (window.matchMedia && window.matchMedia("(pointer: coarse)").matches) || (navigator.maxTouchPoints > 0);
+  if(navigator.share && esMovil){
     var compartir = function(files){
       var datos = { title: a.nombre, text: completo };
       if(files && files.length && navigator.canShare && navigator.canShare({ files: files })){ datos.files = files; }
       else { datos.url = url; }
-      navigator.share(datos).catch(function(){});
+      navigator.share(datos).catch(function(err){ if(!err || err.name !== "AbortError"){ copiar(); } });
     };
     if(a.imagen){
       fetch(a.imagen).then(function(r){ return r.blob(); }).then(function(blob){
