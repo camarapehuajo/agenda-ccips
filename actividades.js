@@ -26,6 +26,19 @@ window.ACTIVIDADES = [
     "privado": false
   },
   {
+    "id": "el-futuro-de-las-pymes-lo-importante-de-cambiar-antes-de-cre",
+    "nombre": "El futuro de las PyMEs: Lo importante de cambiar antes de crecer",
+    "fecha": "2026-10-21",
+    "hora": "19:00",
+    "lugar": "Salón de Actos de la Escuela Normal",
+    "tipo": "Charla",
+    "imagen": "",
+    "descripcion": "Charla a cargo de Damián Di Pace enfocada en brindar herramientas, anticiparse a los cambios y repensar estrategias de gestión para PyMEs y comercios. La entrada tiene un valor de $15.000 para socios plenos y $35.000 para público general. Para reservas y consultas comunicarse al 2396 62 07 23.",
+    "linkInscripcion": "",
+    "ubicacion": "",
+    "privado": false
+  },
+  {
     "id": "9-congreso-de-transformacion-digital",
     "nombre": "9º Congreso de Transformación Digital",
     "fecha": "2026-10-21",

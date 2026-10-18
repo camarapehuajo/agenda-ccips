@@ -6,7 +6,7 @@ X-WR-CALNAME:Agenda CCIPS Pehuajó
 X-PUBLISHED-TTL:PT1H
 BEGIN:VEVENT
 UID:asamblea-general-nov@ccipspehuajo.ar
-DTSTAMP:20261018T010700Z
+DTSTAMP:20261018T013600Z
 DTSTART:20261020T200000
 DTEND:20261020T210000
 SUMMARY:Asamblea General Ordinaria
@@ -14,8 +14,17 @@ DESCRIPTION:Asamblea general ordinaria ejercicio 2025/26
 LOCATION:Salón de la Cámara
 END:VEVENT
 BEGIN:VEVENT
+UID:el-futuro-de-las-pymes-lo-importante-de-cambiar-antes-de-cre@ccipspehuajo.ar
+DTSTAMP:20261018T013600Z
+DTSTART:20261021T190000
+DTEND:20261021T200000
+SUMMARY:El futuro de las PyMEs: Lo importante de cambiar antes de crecer
+DESCRIPTION:Charla a cargo de Damián Di Pace enfocada en brindar herramientas\, anticiparse a los cambios y repensar estrategias de gestión para PyMEs y comercios. La entrada tiene un valor de $15.000 para socios plenos y $35.000 para público general. Para reservas y consultas comunicarse al 2396 62 07 23.
+LOCATION:Salón de Actos de la Escuela Normal
+END:VEVENT
+BEGIN:VEVENT
 UID:9-congreso-de-transformacion-digital@ccipspehuajo.ar
-DTSTAMP:20261018T010700Z
+DTSTAMP:20261018T013600Z
 DTSTART:20261021T090000
 DTEND:20261021T100000
 SUMMARY:9º Congreso de Transformación Digital
