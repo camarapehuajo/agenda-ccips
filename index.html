@@ -170,6 +170,11 @@
   }
   .detail .cover .ph .ic{font-size:60px;color:rgba(255,255,255,.9);}
   .detail .cover .ph .lbl{font-size:13px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.85);}
+  /* ===== VISOR DE IMAGEN (lightbox) ===== */
+  .lightbox{position:fixed;inset:0;z-index:9999;background:rgba(10,12,16,.93);display:flex;align-items:center;justify-content:center;padding:20px;cursor:zoom-out;}
+  .lightbox img{max-width:94vw;max-height:90vh;border-radius:10px;box-shadow:0 20px 60px rgba(0,0,0,.55);background:#fff;}
+  .lightbox .cerrar{position:absolute;top:14px;right:16px;width:44px;height:44px;border-radius:50%;border:none;background:rgba(255,255,255,.18);color:#fff;font-size:26px;line-height:1;cursor:pointer;}
+  .lightbox.hidden{display:none;}
   .detail .body{padding:30px 30px 32px;}
   .detail .tag{display:inline-block;margin-bottom:12px;}
   .detail h2{font-size:24px;font-weight:800;line-height:1.2;}
@@ -416,6 +421,12 @@
 
   </div>
 
+  <!-- VISOR DE IMAGEN (lightbox) -->
+  <div class="lightbox hidden" id="lightbox" role="dialog" aria-modal="true" aria-label="Imagen ampliada">
+    <button class="cerrar" id="lightboxCerrar" type="button" aria-label="Cerrar">×</button>
+    <img id="lightboxImg" src="" alt="">
+  </div>
+
 <script src="actividades.js"></script>
 <script>
 /* ================= DATOS =================
@@ -622,6 +633,33 @@ function icsText(a){
   return L.join("\r\n");
 }
 
+/* ===== Visor de imagen (lightbox) ===== */
+function abrirLightbox(src, alt){
+  var lb = document.getElementById("lightbox");
+  var img = document.getElementById("lightboxImg");
+  if(!lb || !img) return;
+  img.src = src; img.alt = alt || "";
+  lb.classList.remove("hidden");
+  document.body.style.overflow = "hidden";
+}
+function cerrarLightbox(){
+  var lb = document.getElementById("lightbox");
+  if(!lb) return;
+  lb.classList.add("hidden");
+  var img = document.getElementById("lightboxImg");
+  if(img) img.src = "";
+  document.body.style.overflow = "";
+}
+(function(){
+  var lb = document.getElementById("lightbox");
+  var img = document.getElementById("lightboxImg");
+  var b = document.getElementById("lightboxCerrar");
+  if(lb) lb.addEventListener("click", cerrarLightbox);
+  if(img) img.addEventListener("click", function(e){ e.stopPropagation(); });
+  if(b) b.addEventListener("click", function(e){ e.stopPropagation(); cerrarLightbox(); });
+  document.addEventListener("keydown", function(e){ if(e.key === "Escape") cerrarLightbox(); });
+})();
+
 function descargarICS(a){
   if(!a) return;
   var blob = new Blob([icsText(a)], { type: "text/calendar;charset=utf-8" });
@@ -757,7 +795,7 @@ function renderDetalle(id){
     var boton = acciones.length ? '<div class="btn-row">'+acciones.join("")+'</div>' : '';
     var tipoLabel = esc(a.tipo||"Evento");
     var cover = a.imagen
-      ? '<img src="'+esc(a.imagen)+'" alt="'+esc(a.nombre)+'">'
+      ? '<img class="zoomable" src="'+esc(a.imagen)+'" alt="'+esc(a.nombre)+'">'
       : '<span class="ph"><span class="ic">📌</span><span class="lbl">'+tipoLabel+'</span></span>';
 
     el.innerHTML =
@@ -785,6 +823,10 @@ function renderDetalle(id){
   });
   el.querySelectorAll("[data-ics]").forEach(function(btn){
     btn.addEventListener("click", function(){ descargarICS(buscar(btn.getAttribute("data-ics"))); });
+  });
+  el.querySelectorAll(".cover img.zoomable").forEach(function(img){
+    img.style.cursor = "zoom-in";
+    img.addEventListener("click", function(){ abrirLightbox(img.getAttribute("src"), img.getAttribute("alt")); });
   });
 }
 
