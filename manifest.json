@@ -1,0 +1,17 @@
+{
+  "name": "Agenda CCIPS Pehuajó",
+  "short_name": "Agenda CCIPS",
+  "description": "Actividades de la Cámara de Comercio, Industria, Producción y Servicios de Pehuajó.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f4f7fb",
+  "theme_color": "#004F9A",
+  "lang": "es",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "apple-touch-icon.png", "sizes": "180x180", "type": "image/png", "purpose": "any" }
+  ]
+}
