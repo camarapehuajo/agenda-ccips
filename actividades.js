@@ -20,12 +20,12 @@ window.ACTIVIDADES = [
     "hora": "20:00",
     "lugar": "Salón de la Cámara",
     "tipo": "Asamblea",
-    "imagen": "",
+    "imagen": "img/asamblea-general-nov.png",
     "descripcion": "Asamblea general ordinaria ejercicio 2025/26",
     "linkInscripcion": "",
     "ubicacion": "",
     "privado": false,
-    "destacado": false
+    "destacado": true
   },
   {
     "id": "el-futuro-de-las-pymes-lo-importante-de-cambiar-antes-de-cre",
@@ -39,7 +39,7 @@ window.ACTIVIDADES = [
     "linkInscripcion": "",
     "ubicacion": "",
     "privado": false,
-    "destacado": true
+    "destacado": false
   },
   {
     "id": "9-congreso-de-transformacion-digital",
