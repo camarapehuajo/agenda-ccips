@@ -5,57 +5,21 @@ CALSCALE:GREGORIAN
 X-WR-CALNAME:Agenda CCIPS Pehuajó
 X-PUBLISHED-TTL:PT1H
 BEGIN:VEVENT
-UID:charla-impuestos-2026@ccipspehuajo.ar
-DTSTAMP:20261018T001900Z
-DTSTART:20261001T190000
-DTEND:20261001T200000
-SUMMARY:Charla: Impuestos 2026 para comercios
-DESCRIPTION:Repaso práctico de los cambios impositivos 2026 para comercios. A cargo de un contador invitado.
-LOCATION:Salón de la Cámara
-END:VEVENT
-BEGIN:VEVENT
-UID:marketing-digital-pymes@ccipspehuajo.ar
-DTSTAMP:20261018T001900Z
-DTSTART:20261010T183000
-DTEND:20261010T193000
-SUMMARY:Capacitación: Marketing digital para pymes
-DESCRIPTION:Taller práctico: redes sociales\, Google Mi Negocio y publicidad online.
-LOCATION:Aula Taller
-END:VEVENT
-BEGIN:VEVENT
-UID:expo-pehuajo-2026@ccipspehuajo.ar
-DTSTAMP:20261018T001900Z
-DTSTART;VALUE=DATE:20261022
-DTEND;VALUE=DATE:20261023
-SUMMARY:Expo Pehuajó 2026
-DESCRIPTION:La gran feria anual de la ciudad. Stands\, gastronomía y espectáculos.
-LOCATION:Predio Ferial
-END:VEVENT
-BEGIN:VEVENT
-UID:prueba-1@ccipspehuajo.ar
-DTSTAMP:20261018T001900Z
-DTSTART:20261028T160000
-DTEND:20261028T170000
-SUMMARY:Prueba 1
-DESCRIPTION:Esto es una prueba
-LOCATION:asd
-END:VEVENT
-BEGIN:VEVENT
 UID:asamblea-general-nov@ccipspehuajo.ar
-DTSTAMP:20261018T001900Z
-DTSTART:20261105T200000
-DTEND:20261105T210000
+DTSTAMP:20261018T010700Z
+DTSTART:20261020T200000
+DTEND:20261020T210000
 SUMMARY:Asamblea General Ordinaria
-DESCRIPTION:Asamblea general ordinaria de socios.
+DESCRIPTION:Asamblea general ordinaria ejercicio 2025/26
 LOCATION:Salón de la Cámara
 END:VEVENT
 BEGIN:VEVENT
-UID:taller-whatsapp-business@ccipspehuajo.ar
-DTSTAMP:20261018T001900Z
-DTSTART:20261112T180000
-DTEND:20261112T190000
-SUMMARY:Taller: Cómo vender por WhatsApp Business
-DESCRIPTION:Aprendé a usar WhatsApp Business: catálogo y mensajes automáticos.
-LOCATION:Online
+UID:9-congreso-de-transformacion-digital@ccipspehuajo.ar
+DTSTAMP:20261018T010700Z
+DTSTART:20261021T090000
+DTEND:20261021T100000
+SUMMARY:9º Congreso de Transformación Digital
+DESCRIPTION:Propuesta de dos jornadas que reúne a la industria\, la tecnología y el talento para compartir experiencias y conocer las nuevas tendencias productivas. El 21 de octubre se llevará a cabo en 9 de Julio (9:00 h) y el 22 de octubre en Pilar (9:30 h).
+LOCATION:Sociedad Rural de 9 de Julio / Campus Pilar USAL
 END:VEVENT
 END:VCALENDAR
