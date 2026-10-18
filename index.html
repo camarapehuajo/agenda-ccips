@@ -16,7 +16,14 @@
 <meta name="twitter:title" content="Agenda de Actividades — CCIPS Pehuajó">
 <meta name="twitter:description" content="Todas las actividades de la Cámara de Comercio de Pehuajó, en un solo lugar.">
 <meta name="twitter:image" content="https://ccipspehuajo.ar/wp-content/uploads/2025/12/logoccips-300x74.png">
-<link rel="icon" href="https://ccipspehuajo.ar/wp-content/uploads/2023/06/cropped-ccips_png-32x32.png">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#004F9A">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Agenda CCIPS">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;800&display=swap" rel="stylesheet">
@@ -1007,6 +1014,13 @@ document.getElementById("calToday").addEventListener("click", calHoy);
 
 window.addEventListener("hashchange", ruta);
 ruta();
+</script>
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", function () {
+    navigator.serviceWorker.register("sw.js").catch(function () {});
+  });
+}
 </script>
 </body>
 </html>
