@@ -181,6 +181,9 @@
   .lightbox img{max-width:94vw;max-height:90vh;border-radius:10px;box-shadow:0 20px 60px rgba(0,0,0,.55);background:#fff;}
   .lightbox .cerrar{position:absolute;top:14px;right:16px;width:44px;height:44px;border-radius:50%;border:none;background:rgba(255,255,255,.18);color:#fff;font-size:26px;line-height:1;cursor:pointer;}
   .lightbox.hidden{display:none;}
+  /* ===== Toast (aviso "copiado") ===== */
+  .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;font-size:13.5px;font-weight:600;padding:11px 18px;border-radius:999px;box-shadow:0 10px 30px rgba(0,0,0,.28);opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:9998;}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
   .detail .body{padding:30px 30px 32px;}
   .detail .tag{display:inline-block;margin-bottom:12px;}
   .detail h2{font-size:24px;font-weight:800;line-height:1.2;}
@@ -666,6 +669,54 @@ function cerrarLightbox(){
   document.addEventListener("keydown", function(e){ if(e.key === "Escape") cerrarLightbox(); });
 })();
 
+/* ===== Compartir ===== */
+function toast(msg){
+  var t = document.getElementById("toast");
+  if(!t){ t = document.createElement("div"); t.id = "toast"; document.body.appendChild(t); }
+  t.textContent = msg;
+  t.className = "toast show";
+  clearTimeout(t._timer);
+  t._timer = setTimeout(function(){ t.className = "toast"; }, 2600);
+}
+function compartirEvento(a){
+  if(!a) return;
+  var url = location.origin + location.pathname + "#" + a.id;
+  var mm = MESES[+a.fecha.split("-")[1]-1];
+  var linea = a.nombre + "\n📅 " + dia(a.fecha) + " de " + mm + (a.hora ? " · " + a.hora + " hs" : "") + (a.lugar ? "\n📍 " + a.lugar : "");
+  var completo = linea + "\n" + url;
+
+  function copiar(){
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(completo).then(
+        function(){ toast("✅ ¡Link copiado! Pegalo donde quieras"); },
+        function(){ window.prompt("Copiá este texto para compartir:", completo); }
+      );
+    } else {
+      window.prompt("Copiá este texto para compartir:", completo);
+    }
+  }
+
+  if(navigator.share){
+    var compartir = function(files){
+      var datos = { title: a.nombre, text: completo };
+      if(files && files.length && navigator.canShare && navigator.canShare({ files: files })){ datos.files = files; }
+      else { datos.url = url; }
+      navigator.share(datos).catch(function(){});
+    };
+    if(a.imagen){
+      fetch(a.imagen).then(function(r){ return r.blob(); }).then(function(blob){
+        var nombre = (a.imagen.split("/").pop() || "evento");
+        var file = new File([blob], nombre, { type: blob.type || "image/jpeg" });
+        compartir([file]);
+      }).catch(function(){ compartir(null); });
+    } else {
+      compartir(null);
+    }
+  } else {
+    copiar();
+  }
+}
+
 function descargarICS(a){
   if(!a) return;
   var blob = new Blob([icsText(a)], { type: "text/calendar;charset=utf-8" });
@@ -815,6 +866,7 @@ function renderDetalle(id){
     }
     acciones.push('<a class="btn btn-secondary" href="'+esc(gcalLink(a))+'" target="_blank" rel="noopener"><svg class="i-ico" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.523 15.3414c-.5511 0-.9993-.4486-.9993-.9997s.4483-.9993.9993-.9993c.5511 0 .9993.4483.9993.9993.0001.5511-.4483.9997-.9993.9997m-11.046 0c-.5511 0-.9993-.4486-.9993-.9997s.4482-.9993.9993-.9993c.5511 0 .9993.4483.9993.9993 0 .5511-.4483.9997-.9993.9997m11.4045-6.02l1.9973-3.4592a.416.416 0 00-.1521-.5676.416.416 0 00-.5676.1521l-2.0223 3.503C15.5902 8.2439 13.8533 7.8508 12 7.8508s-3.5902.3931-5.1367 1.0989L4.841 5.4467a.4161.4161 0 00-.5677-.1521.4157.4157 0 00-.1521.5676l1.9973 3.4592C2.6889 11.1867.3432 14.6589 0 18.761h24c-.3435-4.1021-2.6892-7.5743-6.1185-9.4396"/></svg>Google Calendar</a>');
     acciones.push('<button class="btn btn-secondary" type="button" data-ics="'+esc(a.id)+'"><svg class="i-ico" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"/></svg>Apple / iOS (.ics)</button>');
+    acciones.push('<button class="btn btn-secondary" type="button" data-share="'+esc(a.id)+'">📤 Compartir</button>');
     var boton = acciones.length ? '<div class="btn-row">'+acciones.join("")+'</div>' : '';
     var tipoLabel = esc(a.tipo||"Evento");
     var cover = a.imagen
@@ -846,6 +898,9 @@ function renderDetalle(id){
   });
   el.querySelectorAll("[data-ics]").forEach(function(btn){
     btn.addEventListener("click", function(){ descargarICS(buscar(btn.getAttribute("data-ics"))); });
+  });
+  el.querySelectorAll("[data-share]").forEach(function(btn){
+    btn.addEventListener("click", function(){ compartirEvento(buscar(btn.getAttribute("data-share"))); });
   });
   el.querySelectorAll(".cover img.zoomable").forEach(function(img){
     img.style.cursor = "zoom-in";
