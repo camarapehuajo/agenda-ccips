@@ -103,11 +103,12 @@ async function main() {
     const linkInscripcion = (pr["Link de inscripción"] || {}).url || "";
     const ubicacion = (pr["Ubicación"] || {}).url || "";
     const privado = !!(pr["Privado"] || {}).checkbox;
+    const destacado = !!(pr["Destacado"] || {}).checkbox;
 
     let imagen = fileUrl(pr["Imagen"]);
     if (imagen) imagen = await downloadImage(imagen, id);
 
-    acts.push({ id, nombre, fecha, hora, lugar, tipo, imagen, descripcion, linkInscripcion, ubicacion, privado });
+    acts.push({ id, nombre, fecha, hora, lugar, tipo, imagen, descripcion, linkInscripcion, ubicacion, privado, destacado });
   }
 
   acts.sort((a, b) => (a.fecha || "").localeCompare(b.fecha || ""));
