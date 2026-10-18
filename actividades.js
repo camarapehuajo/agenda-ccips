@@ -10,7 +10,8 @@ window.ACTIVIDADES = [
     "descripcion": "Reunión interna de la Comisión Directiva.",
     "linkInscripcion": "",
     "ubicacion": "",
-    "privado": true
+    "privado": true,
+    "destacado": false
   },
   {
     "id": "asamblea-general-nov",
@@ -23,7 +24,8 @@ window.ACTIVIDADES = [
     "descripcion": "Asamblea general ordinaria ejercicio 2025/26",
     "linkInscripcion": "",
     "ubicacion": "",
-    "privado": false
+    "privado": false,
+    "destacado": false
   },
   {
     "id": "el-futuro-de-las-pymes-lo-importante-de-cambiar-antes-de-cre",
@@ -36,7 +38,8 @@ window.ACTIVIDADES = [
     "descripcion": "Charla a cargo de Damián Di Pace enfocada en brindar herramientas, anticiparse a los cambios y repensar estrategias de gestión para PyMEs y comercios. La entrada tiene un valor de $15.000 para socios plenos y $35.000 para público general. Para reservas y consultas comunicarse al 2396 62 07 23.",
     "linkInscripcion": "",
     "ubicacion": "",
-    "privado": false
+    "privado": false,
+    "destacado": true
   },
   {
     "id": "9-congreso-de-transformacion-digital",
@@ -49,6 +52,7 @@ window.ACTIVIDADES = [
     "descripcion": "Propuesta de dos jornadas que reúne a la industria, la tecnología y el talento para compartir experiencias y conocer las nuevas tendencias productivas. El 21 de octubre se llevará a cabo en 9 de Julio (9:00 h) y el 22 de octubre en Pilar (9:30 h).",
     "linkInscripcion": "https://forms.gle/aVhT1SDSuXRfHUvZ6",
     "ubicacion": "",
-    "privado": false
+    "privado": false,
+    "destacado": false
   }
 ];
