@@ -686,13 +686,21 @@ function compartirEvento(a){
   var completo = linea + "\n" + url;
 
   function copiar(){
+    var listo = function(){ toast("✅ ¡Link copiado! Pegalo donde quieras"); };
+    function copiaVieja(){
+      var ta = document.createElement("textarea");
+      ta.value = completo; ta.setAttribute("readonly","");
+      ta.style.position = "fixed"; ta.style.top = "-1000px"; ta.style.opacity = "0";
+      document.body.appendChild(ta); ta.select();
+      var ok = false;
+      try { ok = document.execCommand("copy"); } catch(e){}
+      document.body.removeChild(ta);
+      if(ok){ listo(); } else { window.prompt("Copiá este texto para compartir:", completo); }
+    }
     if(navigator.clipboard && navigator.clipboard.writeText){
-      navigator.clipboard.writeText(completo).then(
-        function(){ toast("✅ ¡Link copiado! Pegalo donde quieras"); },
-        function(){ window.prompt("Copiá este texto para compartir:", completo); }
-      );
+      navigator.clipboard.writeText(completo).then(listo, copiaVieja);
     } else {
-      window.prompt("Copiá este texto para compartir:", completo);
+      copiaVieja();
     }
   }
 
