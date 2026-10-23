@@ -428,6 +428,19 @@
           <p class="sub-note">Se sincroniza automáticamente con tus calendarios. Google lo actualiza ~1 vez por día; iOS, a diario.</p>
         </div>
       </div>
+
+      <!-- SUSCRIPCIÓN AL CALENDARIO CD (solo modo CD) -->
+      <div class="subscribe hidden" id="cdSubscribe">
+        <button class="sub-btn" id="cdSubBtn" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="cdSubMenu">
+          📅 Suscribir calendario CD <span class="caret" aria-hidden="true">▾</span>
+        </button>
+        <div class="submenu hidden" id="cdSubMenu" role="menu" aria-label="Suscribirse al calendario de la CD">
+          <a class="sub-item" id="cdSubGoogle" href="https://calendar.google.com/calendar/u/0/r/settings/addbyurl" target="_blank" rel="noopener" role="menuitem">Google Calendar</a>
+          <a class="sub-item" id="cdSubApple" href="#" role="menuitem">Apple / iOS</a>
+          <button class="sub-item" id="cdSubCopy" type="button" role="menuitem">🔗 Copiar link del calendario</button>
+          <p class="sub-note">Google Calendar: en la compu, Otros calendarios → + → Desde URL. iPhone: tocá Apple/iOS. No uses “Importar”.</p>
+        </div>
+      </div>
     </div>
 
     <!-- VISTA LISTA -->
@@ -491,6 +504,7 @@ var PARAMS = new URLSearchParams(location.search);
 var MODO_CD = PARAMS.get("cd") === "1";
 var CLAVE_CD = PARAMS.get("k") || "";
 var CD_CARGADA = false;
+var CD_ICS_URL = "";
 
 /* ================= SUSCRIPCIÓN AL CALENDARIO (feed ICS) =================
    El conector genera, además de actividades.js, un archivo agenda.ics con
@@ -982,6 +996,66 @@ async function descifrarCD(enc, clave) {
   return crypto.subtle.decrypt({ name: "AES-GCM", iv: iv }, key, combined);
 }
 
+async function tokenCalendarioWeb(clave) {
+  var buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode("ccips-cd-cal:" + clave));
+  return Array.from(new Uint8Array(buf)).map(function(b){
+    return b.toString(16).padStart(2, "0");
+  }).join("").slice(0, 24);
+}
+
+function copiarTexto(texto, mensaje) {
+  var listo = function(){ toast(mensaje || "Link copiado"); };
+  var manual = function(){ window.prompt("Copiá este link:", texto); };
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(texto).then(listo, manual);
+  } else {
+    manual();
+  }
+}
+
+function configurarSuscripcionCD() {
+  var pub = document.getElementById("subscribe");
+  var cd = document.getElementById("cdSubscribe");
+  if (pub) pub.classList.add("hidden");
+  if (cd) cd.classList.remove("hidden");
+
+  var apple = document.getElementById("cdSubApple");
+  if (apple) apple.setAttribute("href", "webcal://" + CD_ICS_URL.replace(/^https?:\/\//i, ""));
+
+  var google = document.getElementById("cdSubGoogle");
+  if (google) google.addEventListener("click", function(){
+    copiarTexto(CD_ICS_URL, "Link copiado. En Google Calendar: Otros calendarios → + → Desde URL → pegalo.");
+  });
+
+  var copy = document.getElementById("cdSubCopy");
+  if (copy) copy.addEventListener("click", function(e){
+    e.stopPropagation();
+    copiarTexto(CD_ICS_URL, "Link del calendario copiado.");
+  });
+
+  var btn = document.getElementById("cdSubBtn");
+  var menu = document.getElementById("cdSubMenu");
+  if (btn && menu) {
+    btn.addEventListener("click", function(e){
+      e.stopPropagation();
+      var abierto = btn.getAttribute("aria-expanded") !== "true";
+      btn.setAttribute("aria-expanded", abierto ? "true" : "false");
+      menu.classList.toggle("hidden", !abierto);
+    });
+    menu.addEventListener("click", function(e){ e.stopPropagation(); });
+    document.addEventListener("click", function(){
+      btn.setAttribute("aria-expanded", "false");
+      menu.classList.add("hidden");
+    });
+    document.addEventListener("keydown", function(e){
+      if (e.key === "Escape") {
+        btn.setAttribute("aria-expanded", "false");
+        menu.classList.add("hidden");
+      }
+    });
+  }
+}
+
 function mostrarMensajeCD(msg) {
   document.getElementById("toolbar").classList.add("hidden");
   document.getElementById("calendarView").classList.add("hidden");
@@ -1015,8 +1089,10 @@ async function cargarCD() {
     document.querySelector(".hero h1").textContent = "Agenda de la Comisión Directiva";
     document.querySelector(".hero .sub").textContent = "Actividades públicas y privadas de la CD.";
     document.title = "Agenda CD - CCIPS Pehuajó";
-    var sub = document.getElementById("subscribe");
-    if (sub) sub.classList.add("hidden");
+
+    var token = await tokenCalendarioWeb(CLAVE_CD);
+    CD_ICS_URL = new URL("cd/" + token + ".ics", location.href).href;
+    configurarSuscripcionCD();
 
     document.getElementById("toolbar").classList.remove("hidden");
     ruta();

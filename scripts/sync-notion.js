@@ -136,6 +136,8 @@ function buildICS(acts, editado, calName) {
   L.push("PRODID:-//CCIPS Pehuajo//Agenda//ES");
   L.push("CALSCALE:GREGORIAN");
   L.push("X-WR-CALNAME:" + icsEsc(calName));
+  L.push("X-WR-TIMEZONE:America/Argentina/Buenos_Aires");
+  L.push("REFRESH-INTERVAL;VALUE=DURATION:PT1H");
   L.push("X-PUBLISHED-TTL:PT1H");
   for (const a of acts) {
     if (!a.fecha) continue;
