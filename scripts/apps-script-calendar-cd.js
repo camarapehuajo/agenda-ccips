@@ -40,8 +40,7 @@ function sincronizarAgendaCD() {
     if (!a.fecha) continue;
     var privado = !!a.privado;
     var titulo = (privado ? "🔒 " : "") + a.nombre;
-    var desc = (a.descripcion ? a.descripcion + "\n\n" : "") + "Agenda CD - CCIPS Pehuajó";
-    if (privado) desc += "\n\nEvento privado - Comisión Directiva";
+    var desc = a.descripcion || "";
     var ev;
     if (a.hora) {
       var ini = new Date(a.fecha + "T" + a.hora + ":00-03:00");
