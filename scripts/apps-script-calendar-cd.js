@@ -38,17 +38,21 @@ function sincronizarAgendaCD() {
   for (var j = 0; j < acts.length; j++) {
     var a = acts[j];
     if (!a.fecha) continue;
+    var privado = !!a.privado;
+    var titulo = (privado ? "🔒 " : "") + a.nombre;
     var desc = (a.descripcion ? a.descripcion + "\n\n" : "") + "Agenda CD - CCIPS Pehuajó";
+    if (privado) desc += "\n\nEvento privado - Comisión Directiva";
     var ev;
     if (a.hora) {
       var ini = new Date(a.fecha + "T" + a.hora + ":00-03:00");
       var fin = new Date(ini.getTime() + 3600000);
-      ev = cal.createEvent(a.nombre, ini, fin, { description: desc, location: a.lugar || "" });
+      ev = cal.createEvent(titulo, ini, fin, { description: desc, location: a.lugar || "" });
     } else {
       var p = a.fecha.split("-");
       var dia = new Date(Number(p[0]), Number(p[1]) - 1, Number(p[2]));
-      ev = cal.createAllDayEvent(a.nombre, dia, { description: desc, location: a.lugar || "" });
+      ev = cal.createAllDayEvent(titulo, dia, { description: desc, location: a.lugar || "" });
     }
+    try { ev.setColor(privado ? "#8E24AA" : "#039BE5"); } catch (e) {}
     ev.setTag(MARCA, a.id);
     ev.setTransparency(CalendarApp.EventTransparency.TRANSPARENT);
     n++;
