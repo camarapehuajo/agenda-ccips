@@ -194,7 +194,11 @@ async function updateNotionToken(config, token) {
   if (!config || config.tokenActual === token) return;
   await notion("/pages/" + config.page.id, {
     method: "PATCH",
-    body: JSON.stringify({ properties: { "Token calendario": rt(token) } })
+    body: JSON.stringify({
+      properties: {
+        "Token calendario": { rich_text: [{ type: "text", text: { content: token } }] }
+      }
+    })
   });
   config.tokenActual = token;
 }
