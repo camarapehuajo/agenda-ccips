@@ -43,6 +43,19 @@ async function main() {
     console.log("ESTADO=YA_EXISTE");
     console.log("DB_ID=" + existing.id);
     console.log("DB_URL=" + existing.url);
+
+    // Migración: token de calendario (hash) para no exponer la clave en la URL.
+    const formulaCal = '"https://camarapehuajo.github.io/agenda-ccips/cd/" + prop("Token calendario") + ".ics"';
+    await notion("/databases/" + existing.id, {
+      method: "PATCH",
+      body: {
+        properties: {
+          "Token calendario": { rich_text: {} },
+          "Link calendario": { formula: { expression: formulaCal } }
+        }
+      }
+    });
+    console.log("MIGRADA=SI");
     return;
   }
 
