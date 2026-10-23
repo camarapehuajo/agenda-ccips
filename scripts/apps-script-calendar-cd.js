@@ -6,16 +6,21 @@
  ************************************************************/
 
 var DATOS_URL  = "https://camarapehuajo.github.io/agenda-ccips/cd/agenda.json";
-var CALENDARIO = "Agenda CD";       // nombre exacto del calendario
+var CALENDARIO_ID = "c_36ade96c8d25155a4b278c41a2213c0f7f742f528fc03da904e8899bef1c5a85@group.calendar.google.com";
+var CALENDARIO = "Agenda CD";       // nombre de respaldo, si no encuentra por ID
 var MARCA      = "ccipsidcd";       // etiqueta oculta para reconocer los eventos de este script
 
 function sincronizarAgendaCD() {
-  var cals = CalendarApp.getCalendarsByName(CALENDARIO);
-  if (!cals.length) {
-    Logger.log("No encontré el calendario '" + CALENDARIO + "'. Creálo o revisá el nombre exacto.");
+  var cal = null;
+  try { cal = CalendarApp.getCalendarById(CALENDARIO_ID); } catch (e) {}
+  if (!cal) {
+    var cals = CalendarApp.getCalendarsByName(CALENDARIO);
+    if (cals.length) cal = cals[0];
+  }
+  if (!cal) {
+    Logger.log("No encontré el calendario 'Agenda CD'. Revisá el ID o el nombre exacto, y que la cuenta tenga acceso.");
     return;
   }
-  var cal = cals[0];
 
   // 1) Descargar todas las actividades (públicas + privadas)
   var resp = UrlFetchApp.fetch(DATOS_URL + "?t=" + new Date().getTime(), { muteHttpExceptions: true });
