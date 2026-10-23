@@ -18,12 +18,28 @@
 <meta name="twitter:image" content="https://ccipspehuajo.ar/wp-content/uploads/2025/12/logoccips-300x74.png">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png?v=2">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
-<link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#004F9A">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Agenda CCIPS">
+<script>
+  (function () {
+    var cd = new URLSearchParams(location.search).get("cd") === "1";
+    var link = document.createElement("link");
+    link.rel = "manifest";
+    link.href = cd ? "manifest-cd.json" : "manifest.json";
+    document.head.appendChild(link);
+
+    if (cd) {
+      document.title = "Agenda CD - CCIPS Pehuajó";
+      var titulo = document.querySelector('meta[name="apple-mobile-web-app-title"]');
+      if (titulo) titulo.setAttribute("content", "Agenda CD");
+      var color = document.querySelector('meta[name="theme-color"]');
+      if (color) color.setAttribute("content", "#8E24AA");
+    }
+  })();
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;800&display=swap" rel="stylesheet">
@@ -1074,8 +1090,14 @@ async function cargarCD() {
   document.getElementById("months").innerHTML =
     '<div class="empty"><span class="big">🔒</span>Cargando agenda CD…</div>';
 
-  if (!CLAVE_CD) {
-    mostrarMensajeCD("Este link no tiene clave. Pedile el link actualizado a la Cámara.");
+  var urlKey = PARAMS.get("k") || "";
+  var storedKey = "";
+  try { storedKey = localStorage.getItem("ccips_cd_key") || ""; } catch (e) {}
+  var claves = [];
+  if (urlKey) claves.push(urlKey);
+  if (storedKey && claves.indexOf(storedKey) < 0) claves.push(storedKey);
+  if (claves.length === 0) {
+    mostrarMensajeCD("Este link no tiene clave. Abrí el link personal que te pasó la Cámara.");
     return;
   }
 
@@ -1083,7 +1105,18 @@ async function cargarCD() {
     var res = await fetch("cd/agenda.enc.json?t=" + Date.now(), { cache: "no-store" });
     if (!res.ok) throw new Error("No hay datos");
     var enc = await res.json();
-    var plano = await descifrarCD(enc, CLAVE_CD);
+    var plano = null;
+    var claveOk = "";
+    for (var i = 0; i < claves.length; i++) {
+      try {
+        plano = await descifrarCD(enc, claves[i]);
+        claveOk = claves[i];
+        break;
+      } catch (e2) {}
+    }
+    if (!plano) throw new Error("Clave incorrecta");
+    try { localStorage.setItem("ccips_cd_key", claveOk); } catch (e3) {}
+    CLAVE_CD = claveOk;
     DATA = JSON.parse(new TextDecoder().decode(plano));
     CD_CARGADA = true;
 
