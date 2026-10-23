@@ -437,8 +437,8 @@
         <div class="submenu hidden" id="cdSubMenu" role="menu" aria-label="Suscribirse al calendario de la CD">
           <a class="sub-item" id="cdSubGoogle" href="https://calendar.google.com/calendar/u/0/r/settings/addbyurl" target="_blank" rel="noopener" role="menuitem">Google Calendar</a>
           <a class="sub-item" id="cdSubApple" href="#" role="menuitem">Apple / iOS</a>
-          <button class="sub-item" id="cdSubCopy" type="button" role="menuitem">🔗 Copiar link del calendario</button>
-          <p class="sub-note">Google Calendar: en la compu, Otros calendarios → + → Desde URL. iPhone: tocá Apple/iOS. No uses “Importar”.</p>
+          <button class="sub-item" id="cdSubCopy" type="button" role="menuitem">🔗 Copiar link del ICS</button>
+          <p class="sub-note">Google Calendar: se agrega como calendario y se actualiza solo. iPhone: tocá Apple/iOS.</p>
         </div>
       </div>
     </div>
@@ -505,6 +505,7 @@ var MODO_CD = PARAMS.get("cd") === "1";
 var CLAVE_CD = PARAMS.get("k") || "";
 var CD_CARGADA = false;
 var CD_ICS_URL = "";
+var CD_GCAL_CID = "Y18zNmFkZTk2YzhkMjUxNTVhNGIyNzhjNDFhMjIxM2MwZjdmNzQyZjUyOGZjMDNkYTkwNGU4ODk5YmVmMWM1YTg1QGdyb3VwLmNhbGVuZGFyLmdvb2dsZS5jb20";
 
 /* ================= SUSCRIPCIÓN AL CALENDARIO (feed ICS) =================
    El conector genera, además de actividades.js, un archivo agenda.ics con
@@ -1023,9 +1024,7 @@ function configurarSuscripcionCD() {
   if (apple) apple.setAttribute("href", "webcal://" + CD_ICS_URL.replace(/^https?:\/\//i, ""));
 
   var google = document.getElementById("cdSubGoogle");
-  if (google) google.addEventListener("click", function(){
-    copiarTexto(CD_ICS_URL, "Link copiado. En Google Calendar: Otros calendarios → + → Desde URL → pegalo.");
-  });
+  if (google) google.setAttribute("href", "https://calendar.google.com/calendar/u/0?cid=" + CD_GCAL_CID);
 
   var copy = document.getElementById("cdSubCopy");
   if (copy) copy.addEventListener("click", function(e){

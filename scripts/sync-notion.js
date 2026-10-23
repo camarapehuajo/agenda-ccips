@@ -295,6 +295,7 @@ async function main() {
     const icsName = token + ".ics";
 
     writeIfChanged(path.join("cd", "agenda.enc.json"), encryptData(acts, clave));
+    writeIfChanged(path.join("cd", "agenda.json"), JSON.stringify(acts, null, 2) + "\n");
     writeIfChanged(path.join("cd", icsName), buildICS(acts, editado, nombreCal));
     deleteOldICS(icsName);
 
