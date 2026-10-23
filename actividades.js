@@ -1,19 +1,5 @@
 window.ACTIVIDADES = [
   {
-    "id": "reunion-cd-privada",
-    "nombre": "Reunión de Comisión Directiva",
-    "fecha": "2026-10-15",
-    "hora": "19:30",
-    "lugar": "Sala de reuniones",
-    "tipo": "Reunión",
-    "imagen": "",
-    "descripcion": "Reunión interna de la Comisión Directiva.",
-    "linkInscripcion": "",
-    "ubicacion": "",
-    "privado": true,
-    "destacado": false
-  },
-  {
     "id": "asamblea-general-nov",
     "nombre": "Asamblea General Ordinaria",
     "fecha": "2026-10-20",
