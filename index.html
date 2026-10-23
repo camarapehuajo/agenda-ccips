@@ -125,6 +125,7 @@
   .event.destacado .date .d{font-size:24px;}
   .event.destacado .info .meta{font-size:13px;}
   .dest-badge{display:inline-block;background:linear-gradient(135deg,var(--accent),var(--primary));color:#fff;font-size:9.5px;font-weight:800;letter-spacing:.7px;text-transform:uppercase;padding:3px 9px;border-radius:999px;margin-right:8px;vertical-align:2px;white-space:nowrap;}
+  .priv-badge{display:inline-block;background:#e8eef7;color:#004F9A;font-size:9.5px;font-weight:800;letter-spacing:.7px;text-transform:uppercase;padding:3px 9px;border-radius:999px;margin-right:8px;vertical-align:2px;white-space:nowrap;}
   .event.destacado .tag{background:rgba(5,150,210,.22);}
 
   /* ===== TARJETA EVENTO ===== */
@@ -482,6 +483,15 @@
 =========================================== */
 var DATA = (window.ACTIVIDADES || []);
 
+/* ================= MODO AGENDA CD =================
+   Se activa con ?cd=1&k=CLAVE. La agenda completa (públicas + privadas)
+   viene cifrada en cd/agenda.enc.json y se descifra con la clave del link.
+=================================================== */
+var PARAMS = new URLSearchParams(location.search);
+var MODO_CD = PARAMS.get("cd") === "1";
+var CLAVE_CD = PARAMS.get("k") || "";
+var CD_CARGADA = false;
+
 /* ================= SUSCRIPCIÓN AL CALENDARIO (feed ICS) =================
    El conector genera, además de actividades.js, un archivo agenda.ics con
    todos los eventos públicos. Apuntá ICS_FEED a la URL real de ese archivo.
@@ -524,7 +534,7 @@ function renderCalendario(){
   // Agrupar eventos (solo públicos) por fecha
   var eventosPorFecha = {};
   DATA.forEach(function(a){
-    if(a.privado) return;
+    if(a.privado && !MODO_CD) return;
     (eventosPorFecha[a.fecha] = eventosPorFecha[a.fecha] || []).push(a);
   });
   Object.keys(eventosPorFecha).forEach(function(k){
@@ -705,7 +715,7 @@ function toast(msg){
 }
 function compartirEvento(a){
   if(!a) return;
-  var url = location.origin + location.pathname + "#" + a.id;
+  var url = location.href.split("#")[0] + "#" + a.id;
   var mm = MESES[+a.fecha.split("-")[1]-1];
   var linea = a.nombre + "\n📅 " + dia(a.fecha) + " de " + mm + (a.hora ? " · " + a.hora + " hs" : "") + (a.lugar ? "\n📍 " + a.lugar : "");
   var completo = linea + "\n" + url;
@@ -774,7 +784,7 @@ function eventoCard(a){
     '<div class="date"><div class="d">'+dia(a.fecha)+'</div><div class="m">'+mesCorto(a.fecha)+'</div></div>' +
     '<div class="thumb">'+thumbHtml(a)+'</div>' +
     '<div class="info">' +
-      '<div class="title">'+(a.destacado?'<span class="dest-badge">⭐ Destacado</span>':'')+esc(a.nombre)+'</div>' +
+      '<div class="title">'+(a.destacado?'<span class="dest-badge">⭐ Destacado</span>':'')+((a.privado && MODO_CD)?'<span class="priv-badge">🔒 Privado CD</span>':'')+esc(a.nombre)+'</div>' +
       '<div class="meta">' +
         (a.hora?'<span>🕐 '+esc(a.hora)+' hs</span>':'') +
         (a.lugar?'<span>📍 '+esc(a.lugar)+'</span>':'') +
@@ -814,6 +824,7 @@ function destacadoHtml(a){
     '<div class="d-img">'+img+'<span class="d-badge">⭐ Destacado</span></div>' +
     '<div class="d-body">' +
       '<span class="tag">'+esc(a.tipo||"Evento")+'</span>' +
+      ((a.privado && MODO_CD)?'<span class="priv-badge">🔒 Privado CD</span>':'') +
       '<h3>'+esc(a.nombre)+'</h3>' +
       '<div class="d-meta">' +
         '<span>📅 '+dia(a.fecha)+' de '+(mm||"")+(a.hora?'  🕐 '+esc(a.hora)+' hs':'')+'</span>' +
@@ -825,24 +836,24 @@ function destacadoHtml(a){
 
 function renderLista(filtro){
   filtroActual = filtro || "";
-  var publicas = DATA.filter(function(a){ return !a.privado; })
+  var visibles = DATA.filter(function(a){ return MODO_CD || !a.privado; })
                      .filter(function(a){ return !filtro || (a.tipo===filtro); })
                      .sort(function(a,b){ return parseFecha(a.fecha)-parseFecha(b.fecha); });
 
   var tipos = [];
-  DATA.forEach(function(a){ if(!a.privado && a.tipo && tipos.indexOf(a.tipo)<0) tipos.push(a.tipo); });
+  DATA.forEach(function(a){ if((MODO_CD || !a.privado) && a.tipo && tipos.indexOf(a.tipo)<0) tipos.push(a.tipo); });
   tipos.sort();
   renderFiltros(tipos);
 
   var meses = document.getElementById("months");
-  if(publicas.length===0){
+  if(visibles.length===0){
     meses.innerHTML = '<div class="empty"><span class="big">📅</span>Todavía no hay actividades cargadas.</div>';
     return;
   }
 
   var hoy = new Date(); hoy.setHours(0,0,0,0);
-  var proximas = publicas.filter(function(a){ return parseFecha(a.fecha) >= hoy; });
-  var pasadas  = publicas.filter(function(a){ return parseFecha(a.fecha) < hoy; });
+  var proximas = visibles.filter(function(a){ return parseFecha(a.fecha) >= hoy; });
+  var pasadas  = visibles.filter(function(a){ return parseFecha(a.fecha) < hoy; });
 
   var html = "";
   if(proximas.length){
@@ -913,6 +924,7 @@ function renderDetalle(id){
         '<div class="cover">' + cover + '</div>' +
         '<div class="body">' +
           '<span class="tag">'+tipoLabel+'</span>' +
+          ((a.privado && MODO_CD)?'<span class="priv-badge">🔒 Privado CD</span>':'') +
           '<h2>'+esc(a.nombre)+'</h2>' +
           meta +
           (a.descripcion ? '<div class="desc">'+esc(a.descripcion)+'</div>' : '') +
@@ -947,7 +959,74 @@ function formatoFecha(s){
   return dia(s)+" de "+MESES[d.getMonth()]+" de "+d.getFullYear();
 }
 
+/* ================= AGENDA CD (descifrado) ================= */
+function b64Bytes(s) {
+  var bin = atob(s), out = new Uint8Array(bin.length);
+  for (var i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
+  return out;
+}
+
+async function descifrarCD(enc, clave) {
+  var salt = b64Bytes(enc.salt);
+  var iv = b64Bytes(enc.iv);
+  var tag = b64Bytes(enc.tag);
+  var data = b64Bytes(enc.data);
+  var base = await crypto.subtle.importKey("raw", new TextEncoder().encode(clave), "PBKDF2", false, ["deriveKey"]);
+  var key = await crypto.subtle.deriveKey(
+    { name: "PBKDF2", salt: salt, iterations: enc.iter || 200000, hash: "SHA-256" },
+    base, { name: "AES-GCM", length: 256 }, false, ["decrypt"]
+  );
+  var combined = new Uint8Array(data.length + tag.length);
+  combined.set(data, 0);
+  combined.set(tag, data.length);
+  return crypto.subtle.decrypt({ name: "AES-GCM", iv: iv }, key, combined);
+}
+
+function mostrarMensajeCD(msg) {
+  document.getElementById("toolbar").classList.add("hidden");
+  document.getElementById("calendarView").classList.add("hidden");
+  document.getElementById("detailView").classList.add("hidden");
+  document.getElementById("listView").classList.remove("hidden");
+  document.getElementById("months").innerHTML =
+    '<div class="empty"><span class="big">🔒</span>' + esc(msg) + '</div>';
+}
+
+async function cargarCD() {
+  document.getElementById("toolbar").classList.add("hidden");
+  document.getElementById("listView").classList.remove("hidden");
+  document.getElementById("calendarView").classList.add("hidden");
+  document.getElementById("detailView").classList.add("hidden");
+  document.getElementById("months").innerHTML =
+    '<div class="empty"><span class="big">🔒</span>Cargando agenda CD…</div>';
+
+  if (!CLAVE_CD) {
+    mostrarMensajeCD("Este link no tiene clave. Pedile el link actualizado a la Cámara.");
+    return;
+  }
+
+  try {
+    var res = await fetch("cd/agenda.enc.json?t=" + Date.now(), { cache: "no-store" });
+    if (!res.ok) throw new Error("No hay datos");
+    var enc = await res.json();
+    var plano = await descifrarCD(enc, CLAVE_CD);
+    DATA = JSON.parse(new TextDecoder().decode(plano));
+    CD_CARGADA = true;
+
+    document.querySelector(".hero h1").textContent = "Agenda de la Comisión Directiva";
+    document.querySelector(".hero .sub").textContent = "Actividades públicas y privadas de la CD.";
+    document.title = "Agenda CD - CCIPS Pehuajó";
+    var sub = document.getElementById("subscribe");
+    if (sub) sub.classList.add("hidden");
+
+    document.getElementById("toolbar").classList.remove("hidden");
+    ruta();
+  } catch (e) {
+    mostrarMensajeCD("Este link venció o la clave no es correcta. Pedile el link actualizado a la Cámara.");
+  }
+}
+
 function ruta(){
+  if (MODO_CD && !CD_CARGADA) return;
   var h = location.hash.replace("#","");
   if(h){
     renderDetalle(h);
@@ -1013,7 +1092,7 @@ document.getElementById("calToday").addEventListener("click", calHoy);
 })();
 
 window.addEventListener("hashchange", ruta);
-ruta();
+if (MODO_CD) { cargarCD(); } else { ruta(); }
 </script>
 <script>
 if ("serviceWorker" in navigator) {
