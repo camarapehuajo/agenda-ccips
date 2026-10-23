@@ -66,6 +66,15 @@ function fmtDateOnly(d) { return "" + d.getFullYear() + pad(d.getMonth() + 1) + 
 function fmtUTC(d) { return "" + d.getUTCFullYear() + pad(d.getUTCMonth() + 1) + pad(d.getUTCDate()) + "T" + pad(d.getUTCHours()) + pad(d.getUTCMinutes()) + "00Z"; }
 function icsEsc(s) { return String(s == null ? "" : s).replace(/\\/g, "\\\\").replace(/\r?\n/g, "\\n").replace(/;/g, "\\;").replace(/,/g, "\\,"); }
 
+// Escribe el archivo solo si el contenido cambió (evita commits vacíos).
+function writeIfChanged(file, content) {
+  try {
+    if (fs.readFileSync(file, "utf8") === content) return false;
+  } catch (e) { /* el archivo todavía no existe */ }
+  fs.writeFileSync(file, content);
+  return true;
+}
+
 async function downloadImage(url, id) {
   try {
     const r = await fetch(url);
@@ -84,6 +93,7 @@ async function downloadImage(url, id) {
 async function main() {
   const pages = await fetchAll();
   const acts = [];
+  const editado = new Map(); // id -> last_edited_time (para un DTSTAMP estable)
 
   for (const p of pages) {
     const pr = p.properties || {};
@@ -95,6 +105,7 @@ async function main() {
     if (!nombre) continue;
 
     const id = rt(pr["ID"]) || slug(nombre);
+    editado.set(id, p.last_edited_time || "");
     const fecha = ((((pr["Fecha"] || {}).date) || {}).start || "").slice(0, 10);
     const hora = rt(pr["Hora"]);
     const lugar = rt(pr["Lugar"]);
@@ -111,12 +122,16 @@ async function main() {
     acts.push({ id, nombre, fecha, hora, lugar, tipo, imagen, descripcion, linkInscripcion, ubicacion, privado, destacado });
   }
 
-  acts.sort((a, b) => (a.fecha || "").localeCompare(b.fecha || ""));
+  acts.sort((a, b) =>
+    (a.fecha || "").localeCompare(b.fecha || "") ||
+    (a.hora || "99:99").localeCompare(b.hora || "99:99") ||
+    (a.nombre || "").localeCompare(b.nombre || "", "es")
+  );
 
   // 1) actividades.js
-  fs.writeFileSync("actividades.js", "window.ACTIVIDADES = " + JSON.stringify(acts, null, 2) + ";\n");
+  writeIfChanged("actividades.js", "window.ACTIVIDADES = " + JSON.stringify(acts, null, 2) + ";\n");
   // 1b) actividades.json (datos limpios, para el script de Google Calendar)
-  fs.writeFileSync("actividades.json", JSON.stringify(acts, null, 2) + "\n");
+  writeIfChanged("actividades.json", JSON.stringify(acts, null, 2) + "\n");
 
   // 2) agenda.ics (solo públicas, para el calendario suscripto)
   const L = [];
@@ -131,7 +146,11 @@ async function main() {
     const d = parseDate(a.fecha);
     L.push("BEGIN:VEVENT");
     L.push("UID:" + a.id + "@ccipspehuajo.ar");
-    L.push("DTSTAMP:" + fmtUTC(new Date()));
+    // DTSTAMP estable: usa la última edición en Notion, no la hora de ejecución.
+    // Así el feed solo cambia cuando cambia una actividad.
+    const ultimaEdicion = editado.get(a.id);
+    const stamp = ultimaEdicion ? new Date(ultimaEdicion) : parseDate(a.fecha || "1970-01-01");
+    L.push("DTSTAMP:" + fmtUTC(stamp));
     if (a.hora) {
       const st = new Date(d.getTime());
       const hm = String(a.hora).split(":");
@@ -148,7 +167,7 @@ async function main() {
     L.push("END:VEVENT");
   }
   L.push("END:VCALENDAR");
-  fs.writeFileSync("agenda.ics", L.join("\r\n") + "\r\n");
+  writeIfChanged("agenda.ics", L.join("\r\n") + "\r\n");
 
   console.log("OK: " + acts.length + " actividades sincronizadas (" + acts.filter(a => !a.privado).length + " públicas).");
 }
