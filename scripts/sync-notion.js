@@ -114,8 +114,14 @@ async function fetchConfig() {
   }
 }
 
-function claveValida(s) {
-  return /^[a-z0-9-]{6,60}$/.test(s || "");
+function normalizarClave(s) {
+  return String(s || "")
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 60);
 }
 
 // Token público del calendario: hash de la clave. No expone la clave en el repo.
@@ -203,6 +209,19 @@ async function updateNotionToken(config, token) {
   config.tokenActual = token;
 }
 
+async function updateNotionClave(config, clave) {
+  if (!config || config.clave === clave) return;
+  await notion("/pages/" + config.page.id, {
+    method: "PATCH",
+    body: JSON.stringify({
+      properties: {
+        "Clave": { rich_text: [{ type: "text", text: { content: clave } }] }
+      }
+    })
+  });
+  config.clave = clave;
+}
+
 async function main() {
   const [pages, config] = await Promise.all([fetchAll(), fetchConfig()]);
   const acts = [];
@@ -252,9 +271,20 @@ async function main() {
   let clave = config ? String(config.clave || "").trim() : "";
   const nombreCal = config ? String(config.nombreCal || "Agenda CD").trim() : "Agenda CD";
 
-  if (clave && !claveValida(clave)) {
-    console.error("Configuración Agenda: la Clave debe tener 6-60 caracteres, en minúsculas, números o guiones. No se regeneró la agenda CD.");
-    clave = "";
+  if (clave) {
+    const normalizada = normalizarClave(clave);
+    if (normalizada !== clave) {
+      try {
+        await updateNotionClave(config, normalizada);
+      } catch (e) {
+        console.error("No se pudo normalizar la Clave en Notion: " + e.message);
+      }
+    }
+    clave = normalizada;
+    if (clave.length < 6) {
+      console.error("Configuración Agenda: la Clave quedó demasiado corta (mínimo 6). No se regeneró la agenda CD.");
+      clave = "";
+    }
   }
 
   if (clave) {
