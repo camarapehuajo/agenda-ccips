@@ -6,7 +6,7 @@ X-WR-CALNAME:Agenda CCIPS Pehuajó
 X-PUBLISHED-TTL:PT1H
 BEGIN:VEVENT
 UID:asamblea-general-nov@ccipspehuajo.ar
-DTSTAMP:20261023T154600Z
+DTSTAMP:20261023T162700Z
 DTSTART:20261020T200000
 DTEND:20261020T210000
 SUMMARY:Asamblea General Ordinaria
@@ -15,7 +15,7 @@ LOCATION:Salón de la Cámara
 END:VEVENT
 BEGIN:VEVENT
 UID:el-futuro-de-las-pymes-lo-importante-de-cambiar-antes-de-cre@ccipspehuajo.ar
-DTSTAMP:20261023T154600Z
+DTSTAMP:20261023T162700Z
 DTSTART:20261021T190000
 DTEND:20261021T200000
 SUMMARY:El futuro de las PyMEs: Lo importante de cambiar antes de crecer
@@ -24,11 +24,27 @@ LOCATION:Salón de Actos de la Escuela Normal
 END:VEVENT
 BEGIN:VEVENT
 UID:9-congreso-de-transformacion-digital@ccipspehuajo.ar
-DTSTAMP:20261023T154600Z
+DTSTAMP:20261023T162700Z
 DTSTART:20261021T090000
 DTEND:20261021T100000
 SUMMARY:9º Congreso de Transformación Digital
 DESCRIPTION:Propuesta de dos jornadas que reúne a la industria\, la tecnología y el talento para compartir experiencias y conocer las nuevas tendencias productivas. El 21 de octubre se llevará a cabo en 9 de Julio (9:00 h) y el 22 de octubre en Pilar (9:30 h).
 LOCATION:Sociedad Rural de 9 de Julio / Campus Pilar USAL
+END:VEVENT
+BEGIN:VEVENT
+UID:analisis-de-costos-y-fijacion-de-precios-para-pymes@ccipspehuajo.ar
+DTSTAMP:20261023T162700Z
+DTSTART:20261029T150000
+DTEND:20261029T160000
+SUMMARY:Análisis de Costos y Fijación de Precios para Pymes
+DESCRIPTION:1. Costos\n• Clasificación\n• Principales métodos de costeo\n2. Proceso de Fijación de Precios\n3. Precio en los Canales de Distribución\n4. Fijación estratégica de precios\n• Fijación de precios a partir del costo más un margen.\n• Fijación de precios en función del cliente.\n• Fijación de precios en función de la competencia.\n• Guía práctica de preguntas para fijación estratégica de precios.\n• Fijación de precios para maximizar los beneficios\n• Variación de los niveles de rentabilidad respecto a los cambios en los\nvolúmenes de venta producidos por una variación de precios.\n• Fijación de precios que reflejen valor para los consumidores\n• El rol del Valor en la fijación de precios.\n• Entender el juego de fijación de precios respecto de la competencia.\n• La importancia de tener una Ventaja Competitiva Sostenible.\n• Reacción competitiva. Cómo y cuándo se debe reaccionar.\n• Estrategia de fijación de precios por segmentos\n• Segmentación por tipo de comprador\, por lugar de compra\, por\nmomento de compra\, por cantidades de compra\, de acuerdo al diseño\ndeproducto\, por paquetes de productos.\n• Casos prácticos de fijación de precio\, para un producto tangible y para\nun servicio.
+END:VEVENT
+BEGIN:VEVENT
+UID:gestion-financiera-de-una-pyme@ccipspehuajo.ar
+DTSTAMP:20261023T162700Z
+DTSTART:20261105T150000
+DTEND:20261105T160000
+SUMMARY:Gestión Financiera de una Pyme
+DESCRIPTION:• Definiciones y Alcances.\n• Clasificación y comportamiento de los costos. Tipos de costos y gastos.\nEl modelo costo – volumen – utilidad.\n• Punto de equilibrio. Los costos y la fijación de precios.\n• Técnicas de fijación de precios.\n• El cálculo de los costos y márgenes de empresas de comercios y\nservicios.\n• Planificación estratégica financiera.\n• El capital de trabajo.\n• Distinción entre la situación económica y la financiera en la empresa.\n• Estrategias de financiamiento y flujo de fondos.\n• Controlando el manejo del efectivo en el local.\n• Tratamiento de la inflación en la evaluación de planes de negocios y en\nel análisis de rentabilidad empresaria.
 END:VEVENT
 END:VCALENDAR
