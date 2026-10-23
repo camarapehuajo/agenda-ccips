@@ -15,6 +15,7 @@
 
 const fs = require("fs");
 const path = require("path");
+const { execFileSync } = require("child_process");
 
 const TOKEN = process.env.NOTION_TOKEN || "";
 const DB_ID = process.env.NOTION_DATABASE_ID || "3fc854fe-4e5d-81a1-ad13-ca69cf62f675";
@@ -91,6 +92,13 @@ async function downloadImage(url, id) {
 }
 
 async function main() {
+  // TEMPORAL: crea la base "Configuración Agenda" si todavía no existe.
+  try {
+    execFileSync(process.execPath, ["scripts/setup-config.js"], { stdio: "inherit", env: process.env });
+  } catch (e) {
+    console.error("Setup config: " + e.message);
+  }
+
   const pages = await fetchAll();
   const acts = [];
   const editado = new Map(); // id -> last_edited_time (para un DTSTAMP estable)
