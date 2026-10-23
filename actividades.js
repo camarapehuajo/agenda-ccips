@@ -54,5 +54,33 @@ window.ACTIVIDADES = [
     "ubicacion": "",
     "privado": false,
     "destacado": false
+  },
+  {
+    "id": "analisis-de-costos-y-fijacion-de-precios-para-pymes",
+    "nombre": "Análisis de Costos y Fijación de Precios para Pymes",
+    "fecha": "2026-10-29",
+    "hora": "15:00",
+    "lugar": "",
+    "tipo": "Otro",
+    "imagen": "",
+    "descripcion": "1. Costos\n• Clasificación\n• Principales métodos de costeo\n2. Proceso de Fijación de Precios\n3. Precio en los Canales de Distribución\n4. Fijación estratégica de precios\n• Fijación de precios a partir del costo más un margen.\n• Fijación de precios en función del cliente.\n• Fijación de precios en función de la competencia.\n• Guía práctica de preguntas para fijación estratégica de precios.\n• Fijación de precios para maximizar los beneficios\n• Variación de los niveles de rentabilidad respecto a los cambios en los\nvolúmenes de venta producidos por una variación de precios.\n• Fijación de precios que reflejen valor para los consumidores\n• El rol del Valor en la fijación de precios.\n• Entender el juego de fijación de precios respecto de la competencia.\n• La importancia de tener una Ventaja Competitiva Sostenible.\n• Reacción competitiva. Cómo y cuándo se debe reaccionar.\n• Estrategia de fijación de precios por segmentos\n• Segmentación por tipo de comprador, por lugar de compra, por\nmomento de compra, por cantidades de compra, de acuerdo al diseño\ndeproducto, por paquetes de productos.\n• Casos prácticos de fijación de precio, para un producto tangible y para\nun servicio.",
+    "linkInscripcion": "https://gestion.ccipspehuajo.ar/cursos/index.php",
+    "ubicacion": "",
+    "privado": false,
+    "destacado": false
+  },
+  {
+    "id": "gestion-financiera-de-una-pyme",
+    "nombre": "Gestión Financiera de una Pyme",
+    "fecha": "2026-11-05",
+    "hora": "15:00",
+    "lugar": "",
+    "tipo": "Otro",
+    "imagen": "",
+    "descripcion": "• Definiciones y Alcances.\n• Clasificación y comportamiento de los costos. Tipos de costos y gastos.\nEl modelo costo – volumen – utilidad.\n• Punto de equilibrio. Los costos y la fijación de precios.\n• Técnicas de fijación de precios.\n• El cálculo de los costos y márgenes de empresas de comercios y\nservicios.\n• Planificación estratégica financiera.\n• El capital de trabajo.\n• Distinción entre la situación económica y la financiera en la empresa.\n• Estrategias de financiamiento y flujo de fondos.\n• Controlando el manejo del efectivo en el local.\n• Tratamiento de la inflación en la evaluación de planes de negocios y en\nel análisis de rentabilidad empresaria.",
+    "linkInscripcion": "https://gestion.ccipspehuajo.ar/cursos/index.php",
+    "ubicacion": "",
+    "privado": false,
+    "destacado": false
   }
 ];
