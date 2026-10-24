@@ -14,9 +14,14 @@ function sincronizarAgendaCD() {
     return;
   }
   var acts = JSON.parse(resp.getContentText());
+  var titulos = {};
+  for (var k = 0; k < acts.length; k++) {
+    titulos[acts[k].nombre] = true;
+    titulos["🔒 " + acts[k].nombre] = true;
+  }
   var evs = cal.getEvents(new Date(2000, 0, 1), new Date(2100, 0, 1));
   for (var i = 0; i < evs.length; i++) {
-    if (evs[i].getTag(MARCA)) evs[i].deleteEvent();
+    if (evs[i].getTag(MARCA) || titulos[evs[i].getTitle()]) evs[i].deleteEvent();
   }
   var n = 0;
   for (var j = 0; j < acts.length; j++) {
