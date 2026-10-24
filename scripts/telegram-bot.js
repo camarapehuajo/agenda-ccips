@@ -213,7 +213,10 @@ async function crearEnNotion(a) {
     body: JSON.stringify({ parent: { database_id: DB }, properties: props })
   });
   const d = await res.json();
-  if (!res.ok) throw new Error("Notion: " + JSON.stringify(d));
+  if (!res.ok) {
+    console.error("Notion crear: " + JSON.stringify(d));
+    throw new Error("Notion: " + JSON.stringify(d));
+  }
   return d;
 }
 
@@ -228,6 +231,9 @@ function resumenDe(datos) {
     datos.descripcion ? "\n📝 " + datos.descripcion : ""
   ].filter(Boolean).join("\n");
 }
+
+const CONFIRMA = /^(✅|ok|oka|sí|si|dale|cargar|cargala|cargalo|confirmo|confirmar|listo)$/i;
+const CANCELA = /^(❌|no|cancelar|cancelá|cancelalo|nada)$/i;
 
 async function mostrarBorrador(chatId, key, datos) {
   const resumen = resumenDe(datos);
@@ -268,12 +274,15 @@ async function main() {
 
       if (data.startsWith("ok:")) {
         if (!p) { await tg("sendMessage", { chat_id: chatId, text: "⚠️ Ese borrador ya no está. Mandá el mensaje de nuevo." }); continue; }
+        console.log("Callback OK: " + key);
         try {
           p.datos.id = slug(p.datos.nombre);
           await crearEnNotion(p.datos);
+          console.log("Creada en Notion: " + p.datos.nombre);
           delete pend[key]; cambio = true;
           await tg("editMessageText", { chat_id: chatId, message_id: mid, text: p.resumen + "\n\n✅ *¡Cargada en Notion!* (quedó como Borrador)", parse_mode: "Markdown" });
         } catch (e) {
+          console.error("Error creando en Notion: " + e.message);
           await tg("sendMessage", { chat_id: chatId, text: "⚠️ No pude cargarla: " + String(e.message).slice(0, 200) });
         }
       } else if (data.startsWith("no:")) {
@@ -322,6 +331,31 @@ async function main() {
     // ¿Hay un borrador pendiente en este chat? -> es una corrección
     const existente = draftDeChat(pend, chatId);
     const anterior = existente ? pend[existente].datos : null;
+
+    const t = texto.toLowerCase().trim();
+    if (existente && CONFIRMA.test(t)) {
+      const p = pend[existente];
+      try {
+        p.datos.id = slug(p.datos.nombre);
+        await crearEnNotion(p.datos);
+        console.log("Creada en Notion: " + p.datos.nombre);
+        delete pend[existente]; cambio = true;
+        await tg("sendMessage", { chat_id: chatId, text: "✅ ¡Cargada en Notion! (quedó como Borrador)" });
+      } catch (e) {
+        console.error("Error creando en Notion: " + e.message);
+        await tg("sendMessage", { chat_id: chatId, text: "⚠️ No pude cargarla: " + String(e.message).slice(0, 200) });
+      }
+      continue;
+    }
+    if (existente && CANCELA.test(t)) {
+      delete pend[existente]; cambio = true;
+      await tg("sendMessage", { chat_id: chatId, text: "❌ Cancelado." });
+      continue;
+    }
+    if (!existente && (CONFIRMA.test(t) || CANCELA.test(t))) {
+      await tg("sendMessage", { chat_id: chatId, text: "No hay ningún borrador pendiente para confirmar." });
+      continue;
+    }
 
     await tg("sendMessage", { chat_id: chatId, text: anterior ? "✏️ Actualizando los datos…" : "🤖 Leyendo e interpretando…" });
 
