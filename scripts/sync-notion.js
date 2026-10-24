@@ -62,6 +62,15 @@ const fileUrl = p => { const f = ((p && p.files) || [])[0]; if (!f) return ""; r
 
 const pad = n => (n < 10 ? "0" : "") + n;
 function parseDate(s) { const p = (s || "").split("-").map(Number); return new Date(p[0] || 1970, (p[1] || 1) - 1, p[2] || 1); }
+function normalizarHora(h) {
+  const s = String(h || "").trim();
+  if (!s) return "";
+  let m = s.match(/^(\d{1,2})\s*[.:,hH]\s*(\d{2})/);
+  if (m) return pad(Number(m[1])) + ":" + m[2];
+  m = s.match(/^(\d{1,2})\s*(hs?|horas?)?$/i);
+  if (m) return pad(Number(m[1])) + ":00";
+  return s;
+}
 function addDays(d, n) { const x = new Date(d.getTime()); x.setDate(x.getDate() + n); return x; }
 function addHours(d, n) { const x = new Date(d.getTime()); x.setHours(x.getHours() + n); return x; }
 function fmtLocal(d) { return "" + d.getFullYear() + pad(d.getMonth() + 1) + pad(d.getDate()) + "T" + pad(d.getHours()) + pad(d.getMinutes()) + "00"; }
@@ -241,7 +250,7 @@ async function main() {
     const id = rt(pr["ID"]) || slug(nombre);
     editado.set(id, p.last_edited_time || "");
     const fecha = ((((pr["Fecha"] || {}).date) || {}).start || "").slice(0, 10);
-    const hora = rt(pr["Hora"]);
+    const hora = normalizarHora(rt(pr["Hora"]));
     const lugar = rt(pr["Lugar"]);
     const tipo = ((pr["Tipo"] || {}).select || {}).name || "Otro";
     const descripcion = rt(pr["Descripción"]);
