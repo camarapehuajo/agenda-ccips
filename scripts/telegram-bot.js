@@ -162,7 +162,7 @@ async function aiExtract(texto, anterior) {
 
   if (!GEMINI) throw new Error("La IA no está configurada (falta GEMINI_API_KEY).");
   let out = "", errores = [];
-  const modelos = ["gemini-2.5-flash", "gemini-2.5-flash-lite", "gemini-2.0-flash", "gemini-flash-latest"];
+  const modelos = ["gemini-3.8-flash", "gemini-3.5-flash-lite", "gemini-flash-latest"];
   for (const mo of modelos) {
     const res = await fetch("https://generativelanguage.googleapis.com/v1beta/models/" + mo + ":generateContent?key=" + GEMINI, {
       method: "POST",
