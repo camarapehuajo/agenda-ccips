@@ -40,9 +40,16 @@ async function tg(method, payload) {
   });
   return res.json();
 }
+async function getMe() {
+  const res = await fetch(TGAPI + "/getMe");
+  const d = await res.json();
+  if (!d.ok) throw new Error("getMe: " + d.error_code + " " + d.description);
+  return d.result;
+}
 async function getUpdates(offset) {
   const res = await fetch(TGAPI + "/getUpdates" + (offset != null ? "?offset=" + offset : ""));
   const d = await res.json();
+  if (!d.ok) throw new Error("getUpdates: " + d.error_code + " " + d.description);
   return d.result || [];
 }
 function autorizado(msg) {
@@ -187,11 +194,14 @@ async function mostrarBorrador(chatId, key, datos) {
 
 /* ---------- main ---------- */
 async function main() {
+  const me = await getMe();
+  console.log("Bot: @" + me.username);
   const updates = await getUpdates();
   const pend = cargarPend();
   let cambio = false;
 
   if (updates.length === 0) { console.log("Sin mensajes nuevos."); return; }
+  console.log("Updates recibidos: " + updates.length);
   const maxId = Math.max(...updates.map(u => u.update_id));
 
   for (const u of updates) {
