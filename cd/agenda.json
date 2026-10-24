@@ -56,6 +56,20 @@
     "destacado": false
   },
   {
+    "id": "almuerzo-de-las-fuerzas-vivas",
+    "nombre": "Almuerzo de las fuerzas vivas",
+    "fecha": "2026-10-27",
+    "hora": "",
+    "lugar": "San Rafael, Mendoza",
+    "tipo": "Evento",
+    "imagen": "",
+    "descripcion": "",
+    "linkInscripcion": "",
+    "ubicacion": "",
+    "privado": true,
+    "destacado": false
+  },
+  {
     "id": "analisis-de-costos-y-fijacion-de-precios-para-pymes",
     "nombre": "Análisis de Costos y Fijación de Precios para Pymes",
     "fecha": "2026-10-29",
