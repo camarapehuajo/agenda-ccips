@@ -51,7 +51,7 @@ function sincronizarAgendaCD() {
       var dia = new Date(Number(p[0]), Number(p[1]) - 1, Number(p[2]));
       ev = cal.createAllDayEvent(titulo, dia, { description: desc, location: a.lugar || "" });
     }
-    try { ev.setColor(privado ? "#8E24AA" : "#039BE5"); } catch (e) {}
+    ev.setColor(privado ? CalendarApp.EventColor.MAUVE : CalendarApp.EventColor.BLUE);
     ev.setTag(MARCA, a.id);
     ev.setTransparency(CalendarApp.EventTransparency.TRANSPARENT);
     n++;
