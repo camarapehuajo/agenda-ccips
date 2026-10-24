@@ -247,7 +247,7 @@ async function main() {
     const descripcion = rt(pr["Descripción"]);
     const linkInscripcion = (pr["Link de inscripción"] || {}).url || "";
     const ubicacion = (pr["Ubicación"] || {}).url || "";
-    const privado = !!(pr["Privado"] || {}).checkbox;
+    const privado = !!(((pr["Solo CD"] || {}).checkbox) || ((pr["Privado"] || {}).checkbox));
     const destacado = !!(pr["Destacado"] || {}).checkbox;
 
     let imagen = fileUrl(pr["Imagen"]);

@@ -78,11 +78,11 @@ Lo importante es el **último paso**: que escriba el archivo `actividades.js`.
 | Descripción (texto) | `descripcion` |
 | Link de inscripción (url) | `linkInscripcion` |
 | Ubicación (url) | `ubicacion` |
-| Privado (checkbox) | `privado` |
+| Solo CD (checkbox) | `privado` |
 
 ## Eventos privados
 
-- En Notion marcás la casilla **Privado**.
+- En Notion marcás la casilla **Solo CD**.
 - La actividad **no aparece** en la agenda pública.
 - Se comparte con el link directo: `tusitio/#reunion-cd-privada` (el `id` de la actividad).
 

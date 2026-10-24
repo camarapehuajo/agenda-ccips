@@ -61,7 +61,7 @@ Repetí para cada una. Podés borrar la columna "Tags" que viene por defecto (cl
 | 7 | **Descripción** | Text | Qué es, de qué trata | `descripcion` |
 | 8 | **Link de inscripción** | URL | El enlace del formulario | `linkInscripcion` |
 | 9 | **Ubicación** | URL | Link de Google Maps (opcional; muestra "Ver en mapa") | `ubicacion` |
-| 10 | **Privado** | Checkbox | Marcado = no se muestra al público | `privado` |
+| 10 | **Solo CD** | Checkbox | Marcado = no se muestra al público | `privado` |
 
 ### 3.3. La Fecha (importante)
 
@@ -202,7 +202,7 @@ Un evento **privado** no aparece en la agenda pública de la web, pero igual se 
 
 ### 6.1. Marcar una actividad como privada
 
-1. En la actividad, marcá la casilla **Privado** (checkbox).
+1. En la actividad, marcá la casilla **Solo CD** (checkbox).
 2. Listo: el conector la va a excluir de la lista pública automáticamente.
 
 ### 6.2. Compartir el link directo
@@ -213,7 +213,7 @@ Un evento **privado** no aparece en la agenda pública de la web, pero igual se 
    (reemplazá `TU-DOMINIO` por la dirección real de la agenda y `reunion-comision` por el ID de tu actividad).
 3. Enviá ese link por mail o WhatsApp solo a quienes corresponda. Quien lo abra verá la actividad, aunque no esté en la lista pública.
 
-> **Importante:** la casilla "Privado" solo oculta la actividad de la lista pública. El link directo con el `#id` funciona siempre que el ID esté bien escrito y sin espacios.
+> **Importante:** la casilla "Solo CD" solo oculta la actividad de la lista pública. El link directo con el `#id` funciona siempre que el ID esté bien escrito y sin espacios.
 
 ---
 
@@ -230,7 +230,7 @@ Antes de pasar una actividad a **Publicada**, revisá que cumpla **todo** lo sig
 - [ ] **Imagen**: una imagen representativa (opcional pero recomendado).
 - [ ] **Descripción**: texto que explique de qué trata, para quién, duración, etc.
 - [ ] **Link de inscripción**: el link del formulario (si corresponde inscribirse).
-- [ ] **Privado**: marcado **solo si** no debe verse en la agenda pública.
+- [ ] **Solo CD**: marcado **solo si** no debe verse en la agenda pública.
 - [ ] **Estado**: en "Publicada" cuando esté lista para mostrar, o "Borrador" mientras se prepara.
 
 ---
@@ -238,12 +238,12 @@ Antes de pasar una actividad a **Publicada**, revisá que cumpla **todo** lo sig
 ## Resumen rápido
 
 1. **Cuenta** → creá tu workspace en notion.so.
-2. **Base "Actividades"** → tabla con las 10 propiedades del paso 3 (Nombre, Fecha, Hora, Lugar, Tipo, Imagen, Descripción, Link de inscripción, Ubicación, Privado) + la columna **ID**.
+2. **Base "Actividades"** → tabla con las 10 propiedades del paso 3 (Nombre, Fecha, Hora, Lugar, Tipo, Imagen, Descripción, Link de inscripción, Ubicación, Solo CD) + la columna **ID**.
 3. **Tipo** → Select con 7 opciones exactas.
 4. **ID** → columna de texto a mano (recomendado) o fórmula.
 5. **Vista Tablero** → con la propiedad **Estado** (Borrador / Publicada / Finalizada); arrastrar cambia el estado.
 6. **Base "Inscripciones"** → con relación a "Actividades" + vista **Form** compartida como link público.
 7. **Confirmación por mail** → automatización opcional con Gmail.
-8. **Privado** → checkbox que oculta de la agenda pública; el link directo usa el `#id`.
+8. **Solo CD** → checkbox que oculta de la agenda pública; el link directo usa el `#id`.
 
 Con esto, el conector puede leer "Actividades" y generar la agenda pública automáticamente.

@@ -148,7 +148,6 @@ async function crearEnNotion(a) {
   if (a.linkInscripcion) props["Link de inscripción"] = { url: a.linkInscripcion };
   props["ID"] = rt(a.id || slug(a.nombre));
   props["Estado"] = { select: { name: "Borrador" } };
-  props["Privado"] = { checkbox: false };
 
   const res = await fetch("https://api.notion.com/v1/pages", {
     method: "POST",
