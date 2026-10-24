@@ -161,8 +161,8 @@ async function aiExtract(texto, anterior) {
   }
 
   if (!GEMINI) throw new Error("La IA no está configurada (falta GEMINI_API_KEY).");
-  let out = "", ultimoError = "";
-  const modelos = ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-flash-latest", "gemini-1.5-flash"];
+  let out = "", errores = [];
+  const modelos = ["gemini-2.5-flash", "gemini-2.5-flash-lite", "gemini-2.0-flash", "gemini-flash-latest"];
   for (const mo of modelos) {
     const res = await fetch("https://generativelanguage.googleapis.com/v1beta/models/" + mo + ":generateContent?key=" + GEMINI, {
       method: "POST",
@@ -176,11 +176,15 @@ async function aiExtract(texto, anterior) {
     const d = await res.json();
     if (d && d.candidates && d.candidates[0]) {
       out = (((d.candidates[0].content || {}).parts || [])[0] || {}).text || "";
+      console.log("Gemini: " + mo);
       break;
     }
-    ultimoError = JSON.stringify((d && d.error) || d);
+    const err = (d && d.error) || d;
+    const msg = (err && (err.message || JSON.stringify(err))) || "sin respuesta";
+    errores.push(mo + ": " + String(msg).slice(0, 160));
+    console.error("Gemini " + mo + ": " + String(msg).slice(0, 200));
   }
-  if (!out) throw new Error("Gemini: " + ultimoError.slice(0, 200));
+  if (!out) throw new Error("Gemini: " + errores.join(" | ").slice(0, 500));
 
   const m = out.match(/\{[\s\S]*\}/);
   if (!m) throw new Error("La IA no devolvió JSON: " + out.slice(0, 150));
