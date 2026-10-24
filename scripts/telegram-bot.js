@@ -13,6 +13,9 @@
 */
 
 const fs = require("fs");
+const os = require("os");
+const path = require("path");
+const { execFileSync, execSync } = require("child_process");
 const TG = process.env.TELEGRAM_BOT_TOKEN || "";
 const NOTION = process.env.NOTION_TOKEN || "";
 const GEMINI = process.env.GEMINI_API_KEY || "";
@@ -59,17 +62,61 @@ function autorizado(msg) {
   return ALLOWED.includes(uid) || ALLOWED.includes(cid);
 }
 
-/* ---------- Leer links ---------- */
+/* ---------- Leer links y PDFs ---------- */
+function extraerPdf(buf) {
+  const tmp = path.join(os.tmpdir(), "ccips-" + Date.now() + "-" + Math.floor(Math.random() * 10000) + ".pdf");
+  fs.writeFileSync(tmp, buf);
+  try {
+    let txt = "";
+    try {
+      txt = execFileSync("pdftotext", ["-layout", tmp, "-"], { encoding: "utf8", maxBuffer: 30 * 1024 * 1024 });
+    } catch (e) {
+      execSync("sudo apt-get update -qq && sudo apt-get install -y -qq poppler-utils", { stdio: "ignore" });
+      txt = execFileSync("pdftotext", ["-layout", tmp, "-"], { encoding: "utf8", maxBuffer: 30 * 1024 * 1024 });
+    }
+    return String(txt || "").trim().slice(0, 12000);
+  } catch (e) {
+    console.error("No pude extraer el PDF: " + e.message);
+    return "";
+  } finally {
+    try { fs.unlinkSync(tmp); } catch (e) {}
+  }
+}
+
+async function textoDeDocumento(doc) {
+  if (!doc || !/pdf/i.test(doc.mime_type || "")) return "";
+  try {
+    const f = await tg("getFile", { file_id: doc.file_id });
+    if (!f.ok) {
+      console.error("Telegram getFile: " + f.error_code + " " + f.description);
+      return "";
+    }
+    const r = await fetch("https://api.telegram.org/file/bot" + TG + "/" + f.result.file_path);
+    if (!r.ok) return "";
+    const buf = Buffer.from(await r.arrayBuffer());
+    return extraerPdf(buf);
+  } catch (e) {
+    console.error("PDF: " + e.message);
+    return "";
+  }
+}
+
 async function textoDeLink(url) {
   try {
     const r = await fetch(url, { headers: { "User-Agent": "Mozilla/5.0 (compatible; AgendaCCIPS/1.0)" } });
     if (!r.ok) return "";
+    const ct = (r.headers.get("content-type") || "").toLowerCase();
+    if (ct.includes("application/pdf") || /\.pdf(\?|#|$)/i.test(url)) {
+      const buf = Buffer.from(await r.arrayBuffer());
+      const pdf = extraerPdf(buf);
+      return pdf ? "[PDF]\n" + pdf : "";
+    }
     const html = await r.text();
     const ogT = (html.match(/<meta[^>]+property=["']og:title["'][^>]+content=["']([^"']+)/i) || [])[1] || "";
     const ogD = (html.match(/<meta[^>]+property=["']og:description["'][^>]+content=["']([^"']+)/i) || [])[1] || "";
     let t = html.replace(/<script[\s\S]*?<\/script>/gi, " ").replace(/<style[\s\S]*?<\/style>/gi, " ")
       .replace(/<[^>]+>/g, " ").replace(/&nbsp;/g, " ").replace(/&amp;/g, "&").replace(/\s+/g, " ").trim();
-    return [ogT, ogD].filter(Boolean).join(" — ") + "\n" + t.slice(0, 2500);
+    return [ogT, ogD].filter(Boolean).join(" — ") + "\n" + t.slice(0, 6000);
   } catch (e) { return ""; }
 }
 
@@ -236,17 +283,37 @@ async function main() {
     const msg = u.message || u.edited_message;
     if (!msg) continue;
     const chatId = msg.chat.id;
-    const texto = (msg.text || msg.caption || "").trim();
-    if (!texto) continue;
+    let texto = (msg.text || msg.caption || "").trim();
+    if (!texto && !msg.document) continue;
 
     if (texto === "/start" || texto === "/help" || texto.toLowerCase() === "ayuda") {
       await tg("sendMessage", { chat_id: chatId, text:
         "👋 Soy el bot de la Agenda de CCIPS Pehuajó.\n\n" +
-        "Mandame la info de una actividad (texto informal, datos sueltos o el link). Te muestro lo que entendí y, si confirmás, la cargo en Notion.\n\n" +
+        "Mandame la info de una actividad (texto informal, datos sueltos, un link o un PDF). Te muestro lo que entendí y, si confirmás, la cargo en Notion.\n\n" +
         "Si algo está mal, respondé corrigiendo (ej: «la fecha es el 22 y el lugar es el salón») y te vuelvo a mostrar el resumen." });
       continue;
     }
     if (!autorizado(msg)) { await tg("sendMessage", { chat_id: chatId, text: "⛔ No autorizado." }); continue; }
+
+    if (msg.document) {
+      const esPdf = /pdf/i.test(msg.document.mime_type || "");
+      if (esPdf) {
+        await tg("sendMessage", { chat_id: chatId, text: "📄 Leyendo el PDF…" });
+        const pdf = await textoDeDocumento(msg.document);
+        if (pdf) {
+          texto = (texto + "\n\n[Contenido del PDF]\n" + pdf).trim();
+        } else if (!texto) {
+          await tg("sendMessage", { chat_id: chatId, text: "⚠️ No pude leer el PDF. ¿Es un PDF escaneado? Probá con un PDF que tenga texto o mandame los datos escritos." });
+          continue;
+        } else {
+          await tg("sendMessage", { chat_id: chatId, text: "⚠️ No pude leer el PDF; uso el texto que mandaste." });
+        }
+      } else if (!texto) {
+        await tg("sendMessage", { chat_id: chatId, text: "Por ahora puedo leer texto, links y PDF. Mandame la info escrita o un PDF." });
+        continue;
+      }
+    }
+    if (!texto) continue;
 
     // ¿Hay un borrador pendiente en este chat? -> es una corrección
     const existente = draftDeChat(pend, chatId);
