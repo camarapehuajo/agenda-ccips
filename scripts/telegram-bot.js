@@ -141,12 +141,14 @@ async function aiExtract(texto, anterior) {
     '- "lugar": lugar (string; "" si no)\n' +
     '- "tipo": "Curso","Charla","Evento","Asamblea","Feria","Reunión" u "Otro"\n' +
     '- "descripcion": 1 a 3 oraciones con el detalle (string; "" si no hay)\n' +
-    '- "linkInscripcion": link para anotarse, si hay (string; "" si no)\n';
+    '- "linkInscripcion": link para anotarse, si hay (string; "" si no)\n' +
+    '- "soloCD": true o false (true si la actividad es solo para la Comisión Directiva: "solo de CD", "para CD", "solo comisión", "reservado a la CD", "no publicar"; false si no)\n';
 
   const sistema =
     "Sos el asistente de la Agenda de la Cámara de Comercio, Industria, Producción y Servicios de Pehuajó (CCIPS). " +
     "Interpretás mensajes (informales, cortados, con links) para armar los datos de UNA actividad. " +
     "No seas literal: entendé la intención. No inventes datos que no surjan del texto. " +
+    "Si el mensaje dice que la actividad es solo para la CD, para la Comisión Directiva, reservada o que no se publique, poné soloCD en true. " +
     "Si te paso DATOS ACTUALES y una CORRECCIÓN, devolvés esos datos actualizados (no una actividad nueva).";
 
   let usuario;
@@ -194,6 +196,23 @@ async function aiExtract(texto, anterior) {
 /* ---------- Notion ---------- */
 const slug = s => (s || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 60) || "actividad";
 
+let PROP_SOLO_CD;
+async function nombrePropSoloCD() {
+  if (PROP_SOLO_CD !== undefined) return PROP_SOLO_CD;
+  try {
+    const res = await fetch("https://api.notion.com/v1/databases/" + DB, {
+      headers: { "Authorization": "Bearer " + NOTION, "Notion-Version": "2022-06-28" }
+    });
+    const d = await res.json();
+    if (d.properties && d.properties["Solo CD"]) PROP_SOLO_CD = "Solo CD";
+    else if (d.properties && d.properties["Privado"]) PROP_SOLO_CD = "Privado";
+    else PROP_SOLO_CD = "";
+  } catch (e) {
+    PROP_SOLO_CD = "";
+  }
+  return PROP_SOLO_CD;
+}
+
 async function crearEnNotion(a) {
   const props = {};
   const rt = v => ({ rich_text: [{ text: { content: String(v) } }] });
@@ -206,6 +225,8 @@ async function crearEnNotion(a) {
   if (a.linkInscripcion) props["Link de inscripción"] = { url: a.linkInscripcion };
   props["ID"] = rt(a.id || slug(a.nombre));
   props["Estado"] = { select: { name: "Borrador" } };
+  const propCD = await nombrePropSoloCD();
+  if (propCD) props[propCD] = { checkbox: a.soloCD === true || a.soloCD === "true" };
 
   const res = await fetch("https://api.notion.com/v1/pages", {
     method: "POST",
@@ -227,6 +248,7 @@ function resumenDe(datos) {
     datos.fecha ? "📅 " + datos.fecha + (datos.hora ? "  🕐 " + datos.hora : "") : "📅 (no detecté la fecha)",
     datos.lugar ? "📍 " + datos.lugar : "",
     datos.tipo ? "🏷️ " + datos.tipo : "",
+    datos.soloCD ? "🔒 Solo CD" : "",
     datos.linkInscripcion ? "🔗 " + datos.linkInscripcion : "",
     datos.descripcion ? "\n📝 " + datos.descripcion : ""
   ].filter(Boolean).join("\n");
