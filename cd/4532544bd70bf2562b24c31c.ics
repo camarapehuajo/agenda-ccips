@@ -44,10 +44,10 @@ LOCATION:Salón de Actos de la Escuela Normal
 END:VEVENT
 BEGIN:VEVENT
 UID:almuerzo-de-las-fuerzas-vivas@ccipspehuajo.ar
-DTSTAMP:20261024T022000Z
+DTSTAMP:20261024T120000Z
 DTSTART;VALUE=DATE:20261027
 DTEND;VALUE=DATE:20261028
-SUMMARY:Almuerzo de las fuerzas vivas
+SUMMARY:Almuerzo De Las Fuerzas Vivas
 LOCATION:San Rafael\, Mendoza
 END:VEVENT
 BEGIN:VEVENT
