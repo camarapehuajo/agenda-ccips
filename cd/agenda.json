@@ -96,5 +96,19 @@
     "ubicacion": "",
     "privado": false,
     "destacado": false
+  },
+  {
+    "id": "90-aniversario-de-la-camara-de-bolivar",
+    "nombre": "90° Aniversario de la Cámara de Bolívar",
+    "fecha": "2026-11-14",
+    "hora": "21.30",
+    "lugar": "Sociedad Rural de Bolívar (Av. Mariano Unzué 60)",
+    "tipo": "Evento",
+    "imagen": "",
+    "descripcion": "Celebración del 90° Aniversario de la Cámara Comercial, Industrial y de Servicio de Bolívar, en el marco de la Expo Comercial y Expo Bolívar Produce 2026 (13 al 15 de noviembre). El sábado 14 a las 21:30 hs se realizará la Cena Aniversario con sorteo de un 0 km ($120.000 la tarjeta). Confirmar asistencia al 2314-487420.",
+    "linkInscripcion": "",
+    "ubicacion": "",
+    "privado": true,
+    "destacado": false
   }
 ]
