@@ -232,7 +232,7 @@ function resumenDe(datos) {
   ].filter(Boolean).join("\n");
 }
 
-const CONFIRMA = /^(✅|ok|oka|sí|si|dale|cargar|cargala|cargalo|confirmo|confirmar|listo)$/i;
+const CONFIRMA = /^\s*(✅|ok|oka|sí|si|dale|cargar|carga|cargá|cargala|cargalo|confirmo|confirmar|listo)([, ]+(dale|cargala|cargalo|cargar|en\s+notion|notion))*\s*[.!]*$/i;
 const CANCELA = /^(❌|no|cancelar|cancelá|cancelalo|nada)$/i;
 
 async function mostrarBorrador(chatId, key, datos) {
