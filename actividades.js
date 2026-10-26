@@ -42,6 +42,20 @@ window.ACTIVIDADES = [
     "destacado": false
   },
   {
+    "id": "8-foro-de-comercio-minorista-bonaerense",
+    "nombre": "8° Foro de Comercio Minorista Bonaerense",
+    "fecha": "2026-10-29",
+    "hora": "12:00",
+    "lugar": "Teatro del Municipio de Lomas de Zamora (Manuel Castro 262)",
+    "tipo": "Charla",
+    "imagen": "img/8-foro-de-comercio-minorista-bonaerense.jpg",
+    "descripcion": "Jornada para comerciantes, emprendedores y empresarios PyMEs con charlas sobre liderazgo, inteligencia artificial, casos de éxito y economía. Organizado por FEBACyS y FEBA.",
+    "linkInscripcion": "https://forms.gle/vTUFN1zMeMfx26TH8",
+    "ubicacion": "",
+    "privado": false,
+    "destacado": false
+  },
+  {
     "id": "analisis-de-costos-y-fijacion-de-precios-para-pymes",
     "nombre": "Análisis de Costos y Fijación de Precios para Pymes",
     "fecha": "2026-10-29",

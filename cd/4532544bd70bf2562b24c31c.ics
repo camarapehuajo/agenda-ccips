@@ -51,6 +51,15 @@ SUMMARY:Almuerzo De Las Fuerzas Vivas
 LOCATION:San Rafael\, Mendoza
 END:VEVENT
 BEGIN:VEVENT
+UID:8-foro-de-comercio-minorista-bonaerense@ccipspehuajo.ar
+DTSTAMP:20261026T160300Z
+DTSTART:20261029T120000
+DTEND:20261029T130000
+SUMMARY:8° Foro de Comercio Minorista Bonaerense
+DESCRIPTION:Jornada para comerciantes\, emprendedores y empresarios PyMEs con charlas sobre liderazgo\, inteligencia artificial\, casos de éxito y economía. Organizado por FEBACyS y FEBA.
+LOCATION:Teatro del Municipio de Lomas de Zamora (Manuel Castro 262)
+END:VEVENT
+BEGIN:VEVENT
 UID:analisis-de-costos-y-fijacion-de-precios-para-pymes@ccipspehuajo.ar
 DTSTAMP:20261023T162400Z
 DTSTART:20261029T150000
