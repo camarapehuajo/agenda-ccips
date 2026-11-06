@@ -1,5 +1,19 @@
 [
   {
+    "id": "jornada-de-trabajo-de-comision-directiva",
+    "nombre": "Jornada de Trabajo de Comisión Directiva",
+    "fecha": "",
+    "hora": "",
+    "lugar": "",
+    "tipo": "Otro",
+    "imagen": "",
+    "descripcion": "",
+    "linkInscripcion": "",
+    "ubicacion": "",
+    "privado": false,
+    "destacado": false
+  },
+  {
     "id": "reunion-cd-privada",
     "nombre": "Reunión de Comisión Directiva",
     "fecha": "2026-10-15",
