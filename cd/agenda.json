@@ -1,19 +1,5 @@
 [
   {
-    "id": "jornada-de-trabajo-de-comision-directiva",
-    "nombre": "Jornada de Trabajo de Comisión Directiva",
-    "fecha": "",
-    "hora": "",
-    "lugar": "",
-    "tipo": "Otro",
-    "imagen": "",
-    "descripcion": "",
-    "linkInscripcion": "",
-    "ubicacion": "",
-    "privado": false,
-    "destacado": false
-  },
-  {
     "id": "reunion-cd-privada",
     "nombre": "Reunión de Comisión Directiva",
     "fecha": "2026-10-15",
@@ -124,6 +110,20 @@
     "ubicacion": "",
     "privado": false,
     "destacado": false
+  },
+  {
+    "id": "jornada-de-trabajo-de-comision-directiva",
+    "nombre": "Jornada de Trabajo de Comisión Directiva",
+    "fecha": "2026-11-11",
+    "hora": "10:00",
+    "lugar": "",
+    "tipo": "Otro",
+    "imagen": "img/jornada-de-trabajo-de-comision-directiva.jpg",
+    "descripcion": "Jornada de trabajo en equipo de la comisión Directiva a cargo de Griselda Martinez.",
+    "linkInscripcion": "",
+    "ubicacion": "Artigas y Alsina Pehuajó ",
+    "privado": true,
+    "destacado": true
   },
   {
     "id": "90-aniversario-de-la-camara-de-bolivar",
