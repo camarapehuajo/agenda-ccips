@@ -138,5 +138,19 @@
     "ubicacion": "",
     "privado": true,
     "destacado": false
+  },
+  {
+    "id": "cena-de-fin-de-ano",
+    "nombre": "Cena de Fin de año",
+    "fecha": "2026-12-12",
+    "hora": "20:30",
+    "lugar": "-35.7945418, -61.8853919",
+    "tipo": "Otro",
+    "imagen": "",
+    "descripcion": "Cena de fin de año de la Comisión Directiva y Personal",
+    "linkInscripcion": "",
+    "ubicacion": "",
+    "privado": true,
+    "destacado": false
   }
 ]

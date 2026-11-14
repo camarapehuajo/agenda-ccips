@@ -92,4 +92,13 @@ SUMMARY:90° Aniversario de la Cámara de Bolívar
 DESCRIPTION:Celebración del 90° Aniversario de la Cámara Comercial\, Industrial y de Servicio de Bolívar\, en el marco de la Expo Comercial y Expo Bolívar Produce 2026 (13 al 15 de noviembre). El sábado 14 a las 21:30 hs se realizará la Cena Aniversario con sorteo de un 0 km ($120.000 la tarjeta). Confirmar asistencia al 2314-487420.
 LOCATION:Sociedad Rural de Bolívar (Av. Mariano Unzué 60)
 END:VEVENT
+BEGIN:VEVENT
+UID:cena-de-fin-de-ano@ccipspehuajo.ar
+DTSTAMP:20261114T112900Z
+DTSTART:20261212T203000
+DTEND:20261212T213000
+SUMMARY:Cena de Fin de año
+DESCRIPTION:Cena de fin de año de la Comisión Directiva y Personal
+LOCATION:-35.7945418\, -61.8853919
+END:VEVENT
 END:VCALENDAR
