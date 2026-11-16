@@ -94,11 +94,11 @@ LOCATION:Sociedad Rural de Bolívar (Av. Mariano Unzué 60)
 END:VEVENT
 BEGIN:VEVENT
 UID:cena-de-fin-de-ano@ccipspehuajo.ar
-DTSTAMP:20261114T112900Z
+DTSTAMP:20261116T023200Z
 DTSTART:20261212T203000
 DTEND:20261212T213000
 SUMMARY:Cena de Fin de año
 DESCRIPTION:Cena de fin de año de la Comisión Directiva y Personal
-LOCATION:-35.7945418\, -61.8853919
+LOCATION:Quinta de Santiago Matiasovich
 END:VEVENT
 END:VCALENDAR
